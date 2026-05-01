@@ -1,0 +1,17 @@
+model:
+  name: tcn
+  class: src.models.model_tcn.TCNForecaster
+
+architecture:
+  channels: [64, 64, 64, 64]
+  kernel_size: 3
+  dropout: 0.2
+
+training:
+  batch_size: 64
+  epochs: 50
+  lr: 1.0e-3
+  optimizer: adam
+  weight_decay: 1.0e-5
+  early_stopping_patience: 8
+  grad_clip: 1.0

@@ -1,0 +1,64 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+.python-version.local
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+*.nbconvert.ipynb
+
+# --- Datos (no se versionan) ---
+data/raw/*
+!data/raw/README.md
+!data/raw/.gitkeep
+data/interim/*
+!data/interim/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# --- Experimentos / artefactos ---
+experiments/*
+!experiments/.gitkeep
+mlruns/
+mlartifacts/
+*.ckpt
+*.pt
+*.pth
+*.h5
+*.onnx
+
+# --- Resultados generados ---
+results/figures/*
+!results/figures/.gitkeep
+results/tables/*
+!results/tables/.gitkeep
+results/stats/*
+!results/stats/.gitkeep
+
+# --- Jupyter Book ---
+jupyter_book/_build/
+
+# --- IDE ---
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# --- Testing / coverage ---
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# --- Logs ---
+*.log
+logs/

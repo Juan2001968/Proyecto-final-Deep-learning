@@ -1,0 +1,30 @@
+title: "Forecasting meteorológico horario con Deep Learning (INMET)"
+author: "Juan Andrés Ramos"
+copyright: "2026"
+logo: ""
+
+execute:
+  execute_notebooks: "off"          # los notebooks se ejecutan a mano
+  timeout: 300
+
+repository:
+  url: ""
+  branch: main
+
+html:
+  use_repository_button: false
+  use_issues_button: false
+
+parse:
+  myst_enable_extensions:
+    - amsmath
+    - dollarmath
+    - linkify
+    - colon_fence
+    - deflist
+    - tasklist
+
+sphinx:
+  config:
+    mathjax_path: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    bibtex_reference_style: author_year

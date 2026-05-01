@@ -1,0 +1,268 @@
+# Estaciones INMET incluidas en el estudio.
+# Identificadas por código WMO (visible en el header de cada CSV).
+#
+# Campos por estación:
+#   code         — código WMO (4 caracteres alfanuméricos)
+#   name         — nombre legible (mismo que aparece en el header INMET)
+#   uf           — sigla del estado (2 letras)
+#   region       — macrorregión IBGE: Norte | Nordeste | Centro-Oeste | Sudeste | Sul
+#   biome        — bioma predominante: Amazonia | Cerrado | Caatinga |
+#                                       Mata Atlantica | Pampa | Pantanal
+#   koppen_class — clasificación Köppen-Geiger (Af, Am, Aw, As, BSh, Cfa, Cfb, Cwa, Cwb, ...)
+#
+# La fuente de verdad de la composición regional vive en config/regions.yaml,
+# que se valida contra este archivo en tests/test_regions_consistency.py.
+
+stations:
+  # ------------------------------------------------------------------ Norte (8)
+  - code: A101
+    name: MANAUS
+    uf: AM
+    region: Norte
+    biome: Amazonia
+    koppen_class: Am
+  - code: A201
+    name: BELEM
+    uf: PA
+    region: Norte
+    biome: Amazonia
+    koppen_class: Af
+  - code: A104
+    name: TEFE
+    uf: AM
+    region: Norte
+    biome: Amazonia
+    koppen_class: Af
+  - code: A135
+    name: PORTO VELHO
+    uf: RO
+    region: Norte
+    biome: Amazonia
+    koppen_class: Am
+  - code: A242
+    name: BOA VISTA
+    uf: RR
+    region: Norte
+    biome: Amazonia
+    koppen_class: Aw
+  - code: A102
+    name: RIO BRANCO
+    uf: AC
+    region: Norte
+    biome: Amazonia
+    koppen_class: Am
+  - code: A210
+    name: MACAPA
+    uf: AP
+    region: Norte
+    biome: Amazonia
+    koppen_class: Am
+  - code: A018
+    name: PALMAS
+    uf: TO
+    region: Norte
+    biome: Cerrado
+    koppen_class: Aw
+
+  # --------------------------------------------------------------- Nordeste (9)
+  - code: A301
+    name: SALVADOR - ONDINA
+    uf: BA
+    region: Nordeste
+    biome: Mata Atlantica
+    koppen_class: Af
+  - code: A305
+    name: BARREIRAS
+    uf: BA
+    region: Nordeste
+    biome: Cerrado
+    koppen_class: Aw
+  - code: A309
+    name: PETROLINA
+    uf: PE
+    region: Nordeste
+    biome: Caatinga
+    koppen_class: BSh
+  - code: A328
+    name: RECIFE - CURADO
+    uf: PE
+    region: Nordeste
+    biome: Mata Atlantica
+    koppen_class: As
+  - code: A340
+    name: FORTALEZA
+    uf: CE
+    region: Nordeste
+    biome: Mata Atlantica
+    koppen_class: Aw
+  - code: A312
+    name: TERESINA
+    uf: PI
+    region: Nordeste
+    biome: Caatinga
+    koppen_class: Aw
+  - code: A347
+    name: NATAL
+    uf: RN
+    region: Nordeste
+    biome: Mata Atlantica
+    koppen_class: As
+  - code: A320
+    name: MACEIO
+    uf: AL
+    region: Nordeste
+    biome: Mata Atlantica
+    koppen_class: As
+  - code: A325
+    name: SAO LUIS
+    uf: MA
+    region: Nordeste
+    biome: Mata Atlantica
+    koppen_class: Aw
+
+  # ---------------------------------------------------------- Centro-Oeste (6)
+  - code: A001
+    name: BRASILIA
+    uf: DF
+    region: Centro-Oeste
+    biome: Cerrado
+    koppen_class: Aw
+  - code: A002
+    name: GOIANIA
+    uf: GO
+    region: Centro-Oeste
+    biome: Cerrado
+    koppen_class: Aw
+  - code: A901
+    name: CUIABA
+    uf: MT
+    region: Centro-Oeste
+    biome: Cerrado
+    koppen_class: Aw
+  - code: A923
+    name: SINOP
+    uf: MT
+    region: Centro-Oeste
+    biome: Amazonia
+    koppen_class: Aw
+  - code: A756
+    name: CAMPO GRANDE
+    uf: MS
+    region: Centro-Oeste
+    biome: Cerrado
+    koppen_class: Aw
+  - code: A719
+    name: CORUMBA
+    uf: MS
+    region: Centro-Oeste
+    biome: Pantanal
+    koppen_class: Aw
+
+  # --------------------------------------------------------------- Sudeste (10)
+  - code: A701
+    name: SAO PAULO - MIRANTE
+    uf: SP
+    region: Sudeste
+    biome: Mata Atlantica
+    koppen_class: Cfa
+  - code: A621
+    name: SAO PAULO - INTERLAGOS
+    uf: SP
+    region: Sudeste
+    biome: Mata Atlantica
+    koppen_class: Cfa
+  - code: A744
+    name: CAMPINAS
+    uf: SP
+    region: Sudeste
+    biome: Mata Atlantica
+    koppen_class: Cwa
+  - code: A711
+    name: RIBEIRAO PRETO
+    uf: SP
+    region: Sudeste
+    biome: Cerrado
+    koppen_class: Cwa
+  - code: A652
+    name: RIO DE JANEIRO - JACAREPAGUA
+    uf: RJ
+    region: Sudeste
+    biome: Mata Atlantica
+    koppen_class: Aw
+  - code: A627
+    name: PETROPOLIS
+    uf: RJ
+    region: Sudeste
+    biome: Mata Atlantica
+    koppen_class: Cwb
+  - code: A521
+    name: BELO HORIZONTE - PAMPULHA
+    uf: MG
+    region: Sudeste
+    biome: Mata Atlantica
+    koppen_class: Cwa
+  - code: A537
+    name: UBERLANDIA
+    uf: MG
+    region: Sudeste
+    biome: Cerrado
+    koppen_class: Aw
+  - code: A615
+    name: VITORIA
+    uf: ES
+    region: Sudeste
+    biome: Mata Atlantica
+    koppen_class: Aw
+  - code: A634
+    name: LINHARES
+    uf: ES
+    region: Sudeste
+    biome: Mata Atlantica
+    koppen_class: Aw
+
+  # -------------------------------------------------------------------- Sul (7)
+  - code: A801
+    name: PORTO ALEGRE - JARDIM BOTANICO
+    uf: RS
+    region: Sul
+    biome: Pampa
+    koppen_class: Cfa
+  - code: A883
+    name: PELOTAS
+    uf: RS
+    region: Sul
+    biome: Pampa
+    koppen_class: Cfa
+  - code: A899
+    name: URUGUAIANA
+    uf: RS
+    region: Sul
+    biome: Pampa
+    koppen_class: Cfa
+  - code: A839
+    name: SANTA MARIA
+    uf: RS
+    region: Sul
+    biome: Pampa
+    koppen_class: Cfa
+  - code: A815
+    name: CHAPECO
+    uf: SC
+    region: Sul
+    biome: Mata Atlantica
+    koppen_class: Cfa
+  - code: A861
+    name: FLORIANOPOLIS
+    uf: SC
+    region: Sul
+    biome: Mata Atlantica
+    koppen_class: Cfa
+  - code: A876
+    name: CURITIBA
+    uf: PR
+    region: Sul
+    biome: Mata Atlantica
+    koppen_class: Cfb
+
+# Estación por defecto que usan los notebooks de ejemplo.
+default_station: A001

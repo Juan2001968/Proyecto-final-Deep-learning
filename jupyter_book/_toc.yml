@@ -1,0 +1,10 @@
+format: jb-book
+root: intro
+chapters:
+  - file: notebooks/01_problem_dataset
+  - file: notebooks/02_eda
+  - file: notebooks/03_state_of_the_art
+  - file: notebooks/04_benchmark_models
+  - file: notebooks/05_guide_paper
+  - file: notebooks/06_benchmark_final
+  

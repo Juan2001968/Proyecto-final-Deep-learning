@@ -1,0 +1,65 @@
+# Macrorregiones IBGE (Brasil) — derivadas de config/stations.yaml.
+#
+# Para cada región se listan:
+#   - states            : UFs incluidas en el panel
+#   - dominant_biomes   : biomas presentes en las estaciones (deduplicados)
+#   - koppen_classes    : clases Köppen presentes (deduplicadas)
+#   - station_codes     : códigos WMO incluidos
+#   - n_stations        : longitud de station_codes
+#   - color             : color hex usado de forma consistente en todos los plots
+#
+# La consistencia (todas las estaciones de stations.yaml aparecen aquí en
+# exactamente una región, n_stations == len(station_codes), etc.) se valida
+# automáticamente en tests/test_regions_consistency.py vía
+# `src.utils.regions.assert_consistency()`.
+
+regions:
+  Norte:
+    name: Norte
+    description: Clima ecuatorial humedo dominante; bioma Amazonia con borde Cerrado.
+    states: [AM, PA, RO, RR, AC, AP, TO]
+    dominant_biomes: [Amazonia, Cerrado]
+    koppen_classes: [Af, Am, Aw]
+    station_codes: [A101, A201, A104, A135, A242, A102, A210, A018]
+    n_stations: 8
+    color: "#2E7D32"   # verde Amazonia
+
+  Nordeste:
+    name: Nordeste
+    description: Mosaico Caatinga-Mata Atlantica con franja semiarida interior.
+    states: [BA, PE, CE, PI, RN, AL, MA]
+    dominant_biomes: [Mata Atlantica, Cerrado, Caatinga]
+    koppen_classes: [Af, Aw, As, BSh]
+    station_codes: [A301, A305, A309, A328, A340, A312, A347, A320, A325]
+    n_stations: 9
+    color: "#F57C00"   # naranja semiarido
+
+  Centro-Oeste:
+    name: Centro-Oeste
+    description: Cerrado dominante con transicion a Amazonia (norte) y Pantanal (oeste).
+    states: [DF, GO, MT, MS]
+    dominant_biomes: [Cerrado, Amazonia, Pantanal]
+    koppen_classes: [Aw]
+    station_codes: [A001, A002, A901, A923, A756, A719]
+    n_stations: 6
+    color: "#C0CA33"   # amarillo Cerrado
+
+  Sudeste:
+    name: Sudeste
+    description: Mata Atlantica costera y altiplano interior (Cerrado), clima subtropical.
+    states: [SP, RJ, MG, ES]
+    dominant_biomes: [Mata Atlantica, Cerrado]
+    koppen_classes: [Cfa, Cwa, Cwb, Aw]
+    station_codes: [A701, A621, A744, A711, A652, A627, A521, A537, A615, A634]
+    n_stations: 10
+    color: "#1976D2"   # azul Atlantico
+
+  Sul:
+    name: Sul
+    description: Pampa al sur y Mata Atlantica al norte; subtropical humedo a oceanico.
+    states: [RS, SC, PR]
+    dominant_biomes: [Pampa, Mata Atlantica]
+    koppen_classes: [Cfa, Cfb]
+    station_codes: [A801, A883, A899, A839, A815, A861, A876]
+    n_stations: 7
+    color: "#7B1FA2"   # violeta Pampa

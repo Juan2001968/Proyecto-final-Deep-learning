@@ -1,0 +1,14 @@
+model:
+  name: persistence
+  class: src.models.model_persistence.PersistenceForecaster
+
+architecture: {}
+
+training:
+  batch_size: 64
+  epochs: 1                  # no entrenable: una pasada de evaluación
+  lr: 0.0
+  optimizer: adam
+  weight_decay: 0.0
+  early_stopping_patience: 0
+  grad_clip: 0.0

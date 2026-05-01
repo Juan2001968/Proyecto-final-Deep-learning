@@ -1,0 +1,27 @@
+# Informer (Zhou et al., 2021) — uses TransformerForecaster con variant=informer.
+# La variante específica (ProbSparse self-attention, distilling, generative decoder)
+# se selecciona dentro de model_transformer.py vía el campo `variant`.
+model:
+  name: informer
+  class: src.models.model_transformer.TransformerForecaster
+  variant: informer
+
+architecture:
+  d_model: 128
+  nhead: 8
+  num_encoder_layers: 3
+  num_decoder_layers: 2
+  dim_feedforward: 256
+  dropout: 0.1
+  activation: gelu
+  prob_sparse_factor: 5      # factor c en O(L log L) de ProbSparse self-attention
+
+training:
+  batch_size: 64
+  epochs: 50
+  lr: 1.0e-4
+  optimizer: adamw
+  weight_decay: 1.0e-4
+  warmup_steps: 1000
+  early_stopping_patience: 10
+  grad_clip: 1.0

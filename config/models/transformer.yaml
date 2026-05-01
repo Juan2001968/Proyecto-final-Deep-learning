@@ -1,0 +1,23 @@
+model:
+  name: transformer
+  class: src.models.model_transformer.TransformerForecaster
+  variant: vanilla            # vanilla | informer | autoformer
+
+architecture:
+  d_model: 128
+  nhead: 8
+  num_encoder_layers: 3
+  num_decoder_layers: 3
+  dim_feedforward: 256
+  dropout: 0.1
+  activation: gelu
+
+training:
+  batch_size: 64
+  epochs: 50
+  lr: 1.0e-4
+  optimizer: adamw
+  weight_decay: 1.0e-4
+  warmup_steps: 1000
+  early_stopping_patience: 10
+  grad_clip: 1.0

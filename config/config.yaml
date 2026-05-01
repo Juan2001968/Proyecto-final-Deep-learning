@@ -1,0 +1,176 @@
+# =====================================================================
+# Configuración global del proyecto
+# =====================================================================
+project:
+  name: proyecto-final-deep
+  seed: 42                 # semilla global por defecto
+  seeds_per_model: 5       # # de runs por modelo para media±std
+  device: auto             # auto | cpu | cuda
+  log_level: INFO
+
+# ---------------------------------------------------------------------
+# Paths (todos relativos a la raíz del repo)
+# ---------------------------------------------------------------------
+paths:
+  data_raw: data/raw
+  data_interim: data/interim
+  data_processed: data/processed
+  experiments: experiments
+  results: results
+  figures: results/figures
+  tables: results/tables
+  stats: results/stats
+  stations_config: config/stations.yaml
+  models_config_dir: config/models
+
+# ---------------------------------------------------------------------
+# Ingesta INMET
+# ---------------------------------------------------------------------
+ingest:
+  encoding: latin-1        # también funciona ISO-8859-1
+  separator: ";"
+  decimal: ","
+  na_values: [-9999, "-9999", "-9999.0"]
+  header_rows: 8           # las primeras N líneas son metadatos de la estación
+  timezone_in: UTC         # las CSV INMET ya vienen en UTC
+  metadata_keys:
+    - "REGIÃO"
+    - "UF"
+    - "ESTAÇÃO"
+    - "CODIGO (WMO)"
+    - "LATITUDE"
+    - "LONGITUDE"
+    - "ALTITUDE"
+    - "DATA DE FUNDAÇÃO"
+
+# ---------------------------------------------------------------------
+# Mapeo de nombres INMET → snake_case interno
+# ---------------------------------------------------------------------
+columns:
+  date: "Data"
+  hour: "Hora UTC"
+  rename:
+    "PRECIPITAÇÃO TOTAL, HORÁRIO (mm)": precip_mm
+    "PRESSAO ATMOSFERICA AO NIVEL DA ESTACAO, HORARIA (mB)": pressure_mb
+    "PRESSÃO ATMOSFERICA MAX.NA HORA ANT. (AUT) (mB)": pressure_max_mb
+    "PRESSÃO ATMOSFERICA MIN. NA HORA ANT. (AUT) (mB)": pressure_min_mb
+    "RADIACAO GLOBAL (KJ/m²)": radiation_kj_m2
+    "TEMPERATURA DO AR - BULBO SECO, HORARIA (°C)": temp_c
+    "TEMPERATURA DO PONTO DE ORVALHO (°C)": dew_point_c
+    "TEMPERATURA MÁXIMA NA HORA ANT. (AUT) (°C)": temp_max_c
+    "TEMPERATURA MÍNIMA NA HORA ANT. (AUT) (°C)": temp_min_c
+    "UMIDADE RELATIVA DO AR, HORARIA (%)": humidity_pct
+    "UMIDADE REL. MAX. NA HORA ANT. (AUT) (%)": humidity_max_pct
+    "UMIDADE REL. MIN. NA HORA ANT. (AUT) (%)": humidity_min_pct
+    "VENTO, DIREÇÃO HORARIA (gr) (° (gr))": wind_dir_deg
+    "VENTO, RAJADA MAXIMA (m/s)": wind_gust_ms
+    "VENTO, VELOCIDADE HORARIA (m/s)": wind_speed_ms
+
+# ---------------------------------------------------------------------
+# Tarea de forecasting
+# ---------------------------------------------------------------------
+task:
+  target: temp_c           # variable principal — editar a piacere
+  multi_target: []         # ej. [temp_c, humidity_pct] para multi-output
+  exog:                    # variables exógenas / covariables
+    - humidity_pct
+    - pressure_mb
+    - radiation_kj_m2
+    - wind_speed_ms
+  freq: "h"                # frecuencia horaria
+  lookback: 168            # 7 días * 24 h
+  horizon: 24              # 24 h de pronóstico (multistep)
+
+# ---------------------------------------------------------------------
+# Splits temporales (sin leakage). Tres modos:
+#   - by_year:   train_end / val_end / test_end como años (inclusive)
+#   - by_ratio:  fracciones cronológicas
+#   - by_date:   timestamps explícitos
+# ---------------------------------------------------------------------
+split:
+  mode: by_year
+  by_year:
+    train_years: [2018, 2019, 2020, 2021, 2022, 2023]
+    val_years: [2024]
+    test_years: [2025]
+  by_ratio:
+    train: 0.70
+    val:   0.15
+    test:  0.15
+  by_date:
+    train_end: "2021-12-31 23:00:00"
+    val_end:   "2022-12-31 23:00:00"
+
+# ---------------------------------------------------------------------
+# Features
+# ---------------------------------------------------------------------
+features:
+  cyclic:                  # codificación seno/coseno
+    - hour
+    - day_of_year
+    - month
+  lags: [1, 2, 3, 6, 12, 24, 48, 168]
+  rolling_windows: [3, 6, 12, 24]
+  rolling_stats: [mean, std, min, max]
+  fillna_strategy: time_interpolate   # time_interpolate | ffill | drop
+
+# ---------------------------------------------------------------------
+# Escalado (fit SOLO en train)
+# ---------------------------------------------------------------------
+scaling:
+  method: standard         # standard | minmax | robust | none
+  per_feature: true
+
+# ---------------------------------------------------------------------
+# Entrenamiento
+# ---------------------------------------------------------------------
+training:
+  batch_size: 64
+  epochs: 50
+  lr: 1.0e-3
+  optimizer: adam
+  weight_decay: 1.0e-5
+  early_stopping_patience: 8
+  grad_clip: 1.0
+  num_workers: 2
+  mlflow:
+    enabled: false
+    tracking_uri: "file:./experiments/mlruns"
+
+# ---------------------------------------------------------------------
+# Evaluación
+# ---------------------------------------------------------------------
+evaluation:
+  metrics: [rmse, mae, r2, mape, smape]
+  per_horizon: true
+  bootstrap_ci: true
+  bootstrap_n: 1000
+  bootstrap_alpha: 0.05
+
+# ---------------------------------------------------------------------
+# Tests estadísticos
+# ---------------------------------------------------------------------
+stats:
+  diebold_mariano:
+    h: 1
+    power: 2               # MSE-loss
+    alternative: two-sided
+  friedman_posthoc: nemenyi   # nemenyi | bonferroni | holm
+  wilcoxon_alpha: 0.05
+
+# =============================================================================
+# MUESTREO PROVISIONAL
+# Activar este bloque acelera dramáticamente el entrenamiento para validar el
+# pipeline end-to-end. NO USAR PARA RESULTADOS FINALES.
+# Para resultados oficiales, poner enabled: false (o eliminar el bloque entero).
+# =============================================================================
+sampling:
+  enabled: true                # Toggle único. false = pipeline completo.
+  n_stations_per_region: 1     # 1 estación por región × 5 regiones = 5 estaciones (vs 40)
+  train_years: [2022, 2023]    # Solo 2 años de train (vs 6). val 2024 y test 2025 se mantienen.
+  max_epochs_override: 5       # Cap a 5 épocas por run (vs lo que diga el yaml de cada modelo)
+  n_seeds_override: 2          # Solo 2 semillas (vs 5). Suficiente para validación de pipeline.
+  note: |
+    Muestreo provisional para validar pipeline.
+    Tiempo estimado: ~30-60 min total (vs 5-15h del benchmark completo).
+    Para activar resultados oficiales: poner enabled: false.

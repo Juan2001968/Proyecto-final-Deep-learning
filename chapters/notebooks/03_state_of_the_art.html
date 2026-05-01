@@ -1,0 +1,1113 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Estado del Arte: Modelos de Deep Learning para Forecasting Meteorológico Multi-horizonte &#8212; Forecasting meteorológico horario con Deep Learning (INMET)</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapters/notebooks/03_state_of_the_art';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Forecasting meteorológico horario con Deep Learning (INMET)</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../intro.html">
+                    Proyecto final de Deep Learning aplicado a series temporales meteorológicas
+                </a>
+            </li>
+        </ul>
+        
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/chapters/notebooks/03_state_of_the_art.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Estado del Arte: Modelos de Deep Learning para Forecasting Meteorológico Multi-horizonte</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#estrategia-de-busqueda"><strong>1. Estrategia de Búsqueda</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#palabras-clave">1.1 Palabras clave</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bases-consultadas">1.2 Bases consultadas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#criterios-de-inclusion">1.3 Criterios de inclusión</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#identificacion-del-top-de-modelos"><strong>2. Identificación del Top de Modelos</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparacion-critica"><strong>3. Comparación Crítica</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tabla-comparativa-estructurada"><strong>3.1 Tabla comparativa estructurada</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#heatmap-de-idoneidad-por-criterio-15"><strong>4.2 Heatmap de idoneidad por criterio (1–5)</strong></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conexion-explicita-con-nuestro-eda">5. Conexión Explícita con nuestro EDA</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="estado-del-arte-modelos-de-deep-learning-para-forecasting-meteorologico-multi-horizonte">
+<h1><strong>Estado del Arte: Modelos de Deep Learning para Forecasting Meteorológico Multi-horizonte</strong><a class="headerlink" href="#estado-del-arte-modelos-de-deep-learning-para-forecasting-meteorologico-multi-horizonte" title="Link to this heading">#</a></h1>
+<p>Este capítulo revisa el estado del arte en modelos de
+<em>deep learning</em> aplicados al pronóstico meteorológico multi-horizonte sobre
+paneles de estaciones, con énfasis en la predicción de <strong>temperatura del aire
+(<code class="docutils literal notranslate"><span class="pre">temp_c</span></code>)</strong> a 24 h, 72 h y 168 h sobre el panel nacional brasileño (40 estaciones
+INMET, 5 macrorregiones IBGE, 2018–2025). Partiendo de los <strong>5 papers IEEE Q1</strong>
+ya documentados por los autores, ampliamos la revisión con <strong>4 trabajos
+adicionales</strong> que cubren huecos arquitectónicos críticos para este proyecto:
+<em>Temporal Fusion Transformer</em>, <em>Informer</em>, <em>N-BEATS</em> y <em>DeepAR</em>. El objetivo es
+identificar un <em>Top 9</em> representativo, justificar técnicamente la selección
+final de <strong>5–6 modelos a implementar</strong> en el benchmark, y elegir un <strong>paper
+guía</strong> que vertebre las decisiones arquitectónicas del proyecto.</p>
+<section id="estrategia-de-busqueda">
+<h2><strong>1. Estrategia de Búsqueda</strong><a class="headerlink" href="#estrategia-de-busqueda" title="Link to this heading">#</a></h2>
+<section id="palabras-clave">
+<h3>1.1 Palabras clave<a class="headerlink" href="#palabras-clave" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Categoría</p></th>
+<th class="head"><p>Términos retenidos</p></th>
+<th class="head"><p>Términos descartados (con motivo)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Tarea</p></td>
+<td><p>“weather forecasting”, “temperature prediction”, “multi-horizon time series forecasting”, “panel forecasting”</p></td>
+<td><p>“climate projection” — escala de décadas, fuera de alcance horario</p></td>
+</tr>
+<tr class="row-odd"><td><p>Arquitectura</p></td>
+<td><p>“deep learning”, “LSTM”, “Transformer time series”, “ConvLSTM”, “attention mechanism”, “N-BEATS”, “Temporal Fusion Transformer”</p></td>
+<td><p>“GAN” — generación, no forecasting puntual</p></td>
+</tr>
+<tr class="row-even"><td><p>Datos</p></td>
+<td><p>“automatic weather station”, “meteorological station network”, “INMET”, “ASOS”</p></td>
+<td><p>“satellite imagery”, “radar” — modalidades fuera del enfoque tabular del proyecto</p></td>
+</tr>
+<tr class="row-odd"><td><p>Métricas</p></td>
+<td><p>“RMSE”, “MAE”, “Diebold-Mariano”</p></td>
+<td><p>—</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Las cadenas finales de búsqueda más productivas combinaron:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">(&quot;deep</span> <span class="pre">learning&quot;</span> <span class="pre">OR</span> <span class="pre">&quot;LSTM&quot;</span> <span class="pre">OR</span> <span class="pre">&quot;Transformer&quot;)</span> <span class="pre">AND</span> <span class="pre">(&quot;weather&quot;</span> <span class="pre">OR</span> <span class="pre">&quot;temperature&quot;)</span> <span class="pre">AND</span> <span class="pre">(&quot;multi-step&quot;</span> <span class="pre">OR</span> <span class="pre">&quot;multi-horizon&quot;)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">(&quot;attention&quot;</span> <span class="pre">AND</span> <span class="pre">&quot;LSTM&quot;)</span> <span class="pre">AND</span> <span class="pre">&quot;meteorological&quot;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">(&quot;Temporal</span> <span class="pre">Fusion</span> <span class="pre">Transformer&quot;</span> <span class="pre">OR</span> <span class="pre">&quot;Informer&quot;</span> <span class="pre">OR</span> <span class="pre">&quot;N-BEATS&quot;)</span> <span class="pre">AND</span> <span class="pre">&quot;forecasting&quot;</span></code></p></li>
+</ul>
+</section>
+<section id="bases-consultadas">
+<h3>1.2 Bases consultadas<a class="headerlink" href="#bases-consultadas" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>IEEE Xplore</strong> — fuente primaria; los 5 papers de la revisión inicial provienen de aquí.</p></li>
+<li><p><strong>Web of Science</strong> — confirmación de Q1 / cuartiles JCR para los papers IEEE.</p></li>
+<li><p><strong>Scopus</strong> — verificación de citas y métricas de impacto.</p></li>
+</ol>
+</section>
+<section id="criterios-de-inclusion">
+<h3>1.3 Criterios de inclusión<a class="headerlink" href="#criterios-de-inclusion" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Aplicación directa a forecasting meteorológico <strong>multivariado</strong> (temperatura,
+precipitación, humedad o equivalentes).</p></li>
+<li><p>Uso de <strong>deep learning</strong> como núcleo del modelo (no como simple postproceso).</p></li>
+<li><p>Métricas cuantitativas reportadas (RMSE, MAE, R², CRPS o equivalentes).</p></li>
+<li><p>Preferencia por <strong>revistas Q1</strong> (JCR) o conferencias <em>tier-1</em> (NeurIPS, ICLR,
+AAAI, ICML) para los trabajos arquitectónicos generales.</p></li>
+</ol>
+</section>
+</section>
+<section id="identificacion-del-top-de-modelos">
+<h2><strong>2. Identificación del Top de Modelos</strong><a class="headerlink" href="#identificacion-del-top-de-modelos" title="Link to this heading">#</a></h2>
+<p>A los <strong>5 papers IEEE Q1</strong> de la revisión inicial sumamos <strong>4 trabajos</strong>
+adicionales que llenan huecos arquitectónicos del PDF original:</p>
+<ol class="arabic simple">
+<li><p><strong>Khan &amp; Maity (2020)</strong> — Conv1D-MLP híbrido para precipitación diaria.</p></li>
+<li><p><strong>Tekin, Fazla &amp; Kozat (2024)</strong> — ConvLSTM + atención + context matcher.</p></li>
+<li><p><strong>Suleman &amp; Shridevi (2022)</strong> — SFA-LSTM con atención sobre variables.</p></li>
+<li><p><strong>Sharma et al. (2023)</strong> — DL para lluvia intensa en terreno complejo.</p></li>
+<li><p><strong>Trivedi, Sharma &amp; Pattnaik (2024)</strong> — DL para minimización de error de
+pronóstico de lluvia fuerte.</p></li>
+<li><p><strong>Lim et al. (2021), Temporal Fusion Transformer (TFT)</strong> — Multi-horizonte
+nativo con embeddings de entidad. Encaja con el panel de 40 estaciones y
+cubre el hueco de “Transformers específicos para forecasting”.</p></li>
+<li><p><strong>Zhou et al. (2021), Informer</strong> — Atención dispersa (<code class="docutils literal notranslate"><span class="pre">ProbSparse</span></code>) para
+secuencias largas. Cubre el horizonte de 168 h (7 días) que es ambicioso
+para LSTM/ConvLSTM clásicos.</p></li>
+<li><p><strong>Oreshkin et al. (2020), N-BEATS</strong> — Bloques de basis interpretables;
+<em>baseline fuerte</em> en forecasting puro. Cubre el hueco de modelos no
+recurrentes y no-Transformer competitivos.</p></li>
+<li><p><strong>Salinas et al. (2020), DeepAR</strong> — Modelo global probabilístico con
+embeddings de entidad. Cubre el hueco de pronóstico <strong>probabilístico</strong> sobre
+panel — útil para reportar incertidumbre en eventos extremos.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="n">top_models</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;#&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;año&quot;</span><span class="p">:</span> <span class="mi">2020</span><span class="p">,</span> <span class="s2">&quot;autores&quot;</span><span class="p">:</span> <span class="s2">&quot;Khan &amp; Maity&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;arquitectura&quot;</span><span class="p">:</span> <span class="s2">&quot;Conv1D + MLP (híbrido)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tipo_problema&quot;</span><span class="p">:</span> <span class="s2">&quot;Forecasting precipitación diaria multi-step&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="s2">&quot;GCM simulations (Khordha, India)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;metrica_clave&quot;</span><span class="p">:</span> <span class="s2">&quot;RMSE, NSE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Q1&quot;</span><span class="p">:</span> <span class="s2">&quot;sí (IEEE Access)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;en_PDF&quot;</span><span class="p">:</span> <span class="s2">&quot;sí&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;#&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;año&quot;</span><span class="p">:</span> <span class="mi">2024</span><span class="p">,</span> <span class="s2">&quot;autores&quot;</span><span class="p">:</span> <span class="s2">&quot;Tekin, Fazla &amp; Kozat&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;arquitectura&quot;</span><span class="p">:</span> <span class="s2">&quot;ConvLSTM + atención + context matcher&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tipo_problema&quot;</span><span class="p">:</span> <span class="s2">&quot;Forecasting espacio-temporal NWF&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="s2">&quot;ERA5 reanálisis (grilla)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;metrica_clave&quot;</span><span class="p">:</span> <span class="s2">&quot;MSE, MAE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Q1&quot;</span><span class="p">:</span> <span class="s2">&quot;sí (IEEE T-GRS)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;en_PDF&quot;</span><span class="p">:</span> <span class="s2">&quot;sí&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;#&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;año&quot;</span><span class="p">:</span> <span class="mi">2022</span><span class="p">,</span> <span class="s2">&quot;autores&quot;</span><span class="p">:</span> <span class="s2">&quot;Suleman &amp; Shridevi&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;arquitectura&quot;</span><span class="p">:</span> <span class="s2">&quot;SFA-LSTM (encoder-decoder + atención)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tipo_problema&quot;</span><span class="p">:</span> <span class="s2">&quot;Forecasting temperatura corto plazo&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="s2">&quot;Estación única (multivariado)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;metrica_clave&quot;</span><span class="p">:</span> <span class="s2">&quot;RMSE, MAE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Q1&quot;</span><span class="p">:</span> <span class="s2">&quot;sí (IEEE Access)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;en_PDF&quot;</span><span class="p">:</span> <span class="s2">&quot;sí&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;#&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;año&quot;</span><span class="p">:</span> <span class="mi">2023</span><span class="p">,</span> <span class="s2">&quot;autores&quot;</span><span class="p">:</span> <span class="s2">&quot;Sharma et al.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;arquitectura&quot;</span><span class="p">:</span> <span class="s2">&quot;DL distrital (CNN/RNN)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tipo_problema&quot;</span><span class="p">:</span> <span class="s2">&quot;Forecasting lluvia intensa terreno complejo&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="s2">&quot;NE India, escala distrital&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;metrica_clave&quot;</span><span class="p">:</span> <span class="s2">&quot;POD, FAR, CSI&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Q1&quot;</span><span class="p">:</span> <span class="s2">&quot;sí (IEEE T-GRS)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;en_PDF&quot;</span><span class="p">:</span> <span class="s2">&quot;sí&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;#&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;año&quot;</span><span class="p">:</span> <span class="mi">2024</span><span class="p">,</span> <span class="s2">&quot;autores&quot;</span><span class="p">:</span> <span class="s2">&quot;Trivedi, Sharma &amp; Pattnaik&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;arquitectura&quot;</span><span class="p">:</span> <span class="s2">&quot;DL como post-procesador&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tipo_problema&quot;</span><span class="p">:</span> <span class="s2">&quot;Reducción de error en pronóstico real-time&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="s2">&quot;Assam, eventos lluvia fuerte&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;metrica_clave&quot;</span><span class="p">:</span> <span class="s2">&quot;RMSE, bias&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Q1&quot;</span><span class="p">:</span> <span class="s2">&quot;sí (IEEE GRSL)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;en_PDF&quot;</span><span class="p">:</span> <span class="s2">&quot;sí&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;#&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;año&quot;</span><span class="p">:</span> <span class="mi">2021</span><span class="p">,</span> <span class="s2">&quot;autores&quot;</span><span class="p">:</span> <span class="s2">&quot;Lim, Arık, Loeff &amp; Pfister&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;arquitectura&quot;</span><span class="p">:</span> <span class="s2">&quot;Temporal Fusion Transformer&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tipo_problema&quot;</span><span class="p">:</span> <span class="s2">&quot;Forecasting multi-horizonte multivariado&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="s2">&quot;Electricity, Traffic, Volatility, Retail&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;metrica_clave&quot;</span><span class="p">:</span> <span class="s2">&quot;Quantile loss (P50/P90)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Q1&quot;</span><span class="p">:</span> <span class="s2">&quot;sí (Int. J. Forecasting)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;en_PDF&quot;</span><span class="p">:</span> <span class="s2">&quot;no&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;#&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s2">&quot;año&quot;</span><span class="p">:</span> <span class="mi">2021</span><span class="p">,</span> <span class="s2">&quot;autores&quot;</span><span class="p">:</span> <span class="s2">&quot;Zhou et al. (Informer)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;arquitectura&quot;</span><span class="p">:</span> <span class="s2">&quot;Transformer + ProbSparse self-attention&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tipo_problema&quot;</span><span class="p">:</span> <span class="s2">&quot;Long sequence time-series forecasting&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="s2">&quot;ETT, ECL, Weather, ILI&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;metrica_clave&quot;</span><span class="p">:</span> <span class="s2">&quot;MSE, MAE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Q1&quot;</span><span class="p">:</span> <span class="s2">&quot;AAAI 2021 (best paper)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;en_PDF&quot;</span><span class="p">:</span> <span class="s2">&quot;no&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;#&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;año&quot;</span><span class="p">:</span> <span class="mi">2020</span><span class="p">,</span> <span class="s2">&quot;autores&quot;</span><span class="p">:</span> <span class="s2">&quot;Oreshkin et al. (N-BEATS)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;arquitectura&quot;</span><span class="p">:</span> <span class="s2">&quot;Stack de bloques fully-connected con basis&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tipo_problema&quot;</span><span class="p">:</span> <span class="s2">&quot;Forecasting univariado y multi-step&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="s2">&quot;M3, M4, Tourism&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;metrica_clave&quot;</span><span class="p">:</span> <span class="s2">&quot;sMAPE, MASE&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Q1&quot;</span><span class="p">:</span> <span class="s2">&quot;ICLR 2020&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;en_PDF&quot;</span><span class="p">:</span> <span class="s2">&quot;no&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;#&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="s2">&quot;año&quot;</span><span class="p">:</span> <span class="mi">2020</span><span class="p">,</span> <span class="s2">&quot;autores&quot;</span><span class="p">:</span> <span class="s2">&quot;Salinas et al. (DeepAR)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;arquitectura&quot;</span><span class="p">:</span> <span class="s2">&quot;RNN autoregresivo probabilístico&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tipo_problema&quot;</span><span class="p">:</span> <span class="s2">&quot;Forecasting global probabilístico (panel)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="s2">&quot;Electricity, Traffic, Wikipedia, M4&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;metrica_clave&quot;</span><span class="p">:</span> <span class="s2">&quot;ND, NRMSE, P50/P90 quantile loss&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Q1&quot;</span><span class="p">:</span> <span class="s2">&quot;sí (Int. J. Forecasting)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;en_PDF&quot;</span><span class="p">:</span> <span class="s2">&quot;no&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">])</span>
+<span class="n">top_models</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>#</th>
+      <th>año</th>
+      <th>autores</th>
+      <th>arquitectura</th>
+      <th>tipo_problema</th>
+      <th>dataset</th>
+      <th>metrica_clave</th>
+      <th>Q1</th>
+      <th>en_PDF</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>2020</td>
+      <td>Khan &amp; Maity</td>
+      <td>Conv1D + MLP (híbrido)</td>
+      <td>Forecasting precipitación diaria multi-step</td>
+      <td>GCM simulations (Khordha, India)</td>
+      <td>RMSE, NSE</td>
+      <td>sí (IEEE Access)</td>
+      <td>sí</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>2024</td>
+      <td>Tekin, Fazla &amp; Kozat</td>
+      <td>ConvLSTM + atención + context matcher</td>
+      <td>Forecasting espacio-temporal NWF</td>
+      <td>ERA5 reanálisis (grilla)</td>
+      <td>MSE, MAE</td>
+      <td>sí (IEEE T-GRS)</td>
+      <td>sí</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>2022</td>
+      <td>Suleman &amp; Shridevi</td>
+      <td>SFA-LSTM (encoder-decoder + atención)</td>
+      <td>Forecasting temperatura corto plazo</td>
+      <td>Estación única (multivariado)</td>
+      <td>RMSE, MAE</td>
+      <td>sí (IEEE Access)</td>
+      <td>sí</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>2023</td>
+      <td>Sharma et al.</td>
+      <td>DL distrital (CNN/RNN)</td>
+      <td>Forecasting lluvia intensa terreno complejo</td>
+      <td>NE India, escala distrital</td>
+      <td>POD, FAR, CSI</td>
+      <td>sí (IEEE T-GRS)</td>
+      <td>sí</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>2024</td>
+      <td>Trivedi, Sharma &amp; Pattnaik</td>
+      <td>DL como post-procesador</td>
+      <td>Reducción de error en pronóstico real-time</td>
+      <td>Assam, eventos lluvia fuerte</td>
+      <td>RMSE, bias</td>
+      <td>sí (IEEE GRSL)</td>
+      <td>sí</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>6</td>
+      <td>2021</td>
+      <td>Lim, Arık, Loeff &amp; Pfister</td>
+      <td>Temporal Fusion Transformer</td>
+      <td>Forecasting multi-horizonte multivariado</td>
+      <td>Electricity, Traffic, Volatility, Retail</td>
+      <td>Quantile loss (P50/P90)</td>
+      <td>sí (Int. J. Forecasting)</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>7</td>
+      <td>2021</td>
+      <td>Zhou et al. (Informer)</td>
+      <td>Transformer + ProbSparse self-attention</td>
+      <td>Long sequence time-series forecasting</td>
+      <td>ETT, ECL, Weather, ILI</td>
+      <td>MSE, MAE</td>
+      <td>AAAI 2021 (best paper)</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>8</td>
+      <td>2020</td>
+      <td>Oreshkin et al. (N-BEATS)</td>
+      <td>Stack de bloques fully-connected con basis</td>
+      <td>Forecasting univariado y multi-step</td>
+      <td>M3, M4, Tourism</td>
+      <td>sMAPE, MASE</td>
+      <td>ICLR 2020</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>9</td>
+      <td>2020</td>
+      <td>Salinas et al. (DeepAR)</td>
+      <td>RNN autoregresivo probabilístico</td>
+      <td>Forecasting global probabilístico (panel)</td>
+      <td>Electricity, Traffic, Wikipedia, M4</td>
+      <td>ND, NRMSE, P50/P90 quantile loss</td>
+      <td>sí (Int. J. Forecasting)</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="comparacion-critica">
+<h2><strong>3. Comparación Crítica</strong><a class="headerlink" href="#comparacion-critica" title="Link to this heading">#</a></h2>
+<section id="tabla-comparativa-estructurada">
+<h3><strong>3.1 Tabla comparativa estructurada</strong><a class="headerlink" href="#tabla-comparativa-estructurada" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="n">comparison</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+    <span class="p">{</span><span class="s2">&quot;modelo&quot;</span><span class="p">:</span> <span class="s2">&quot;Conv1D-MLP (Khan)&quot;</span><span class="p">,</span>     <span class="s2">&quot;año&quot;</span><span class="p">:</span> <span class="mi">2020</span><span class="p">,</span>
+     <span class="s2">&quot;arquitectura&quot;</span><span class="p">:</span> <span class="s2">&quot;CNN+MLP híbrido&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;multi_horizonte&quot;</span><span class="p">:</span> <span class="s2">&quot;vector denso (limitado)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;panel_embeddings&quot;</span><span class="p">:</span> <span class="s2">&quot;no&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;estacionalidad&quot;</span><span class="p">:</span> <span class="s2">&quot;no explícita (necesita features cíclicas)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;costo&quot;</span><span class="p">:</span> <span class="s2">&quot;bajo&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;interpretabilidad&quot;</span><span class="p">:</span> <span class="s2">&quot;baja&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;idoneidad_temp_brasil&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;modelo&quot;</span><span class="p">:</span> <span class="s2">&quot;ConvLSTM+Att (Tekin)&quot;</span><span class="p">,</span>  <span class="s2">&quot;año&quot;</span><span class="p">:</span> <span class="mi">2024</span><span class="p">,</span>
+     <span class="s2">&quot;arquitectura&quot;</span><span class="p">:</span> <span class="s2">&quot;ConvLSTM+attention&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;multi_horizonte&quot;</span><span class="p">:</span> <span class="s2">&quot;rolling encoder-decoder&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;panel_embeddings&quot;</span><span class="p">:</span> <span class="s2">&quot;no (asume grilla)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;estacionalidad&quot;</span><span class="p">:</span> <span class="s2">&quot;implícita en features 2D&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;costo&quot;</span><span class="p">:</span> <span class="s2">&quot;alto&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;interpretabilidad&quot;</span><span class="p">:</span> <span class="s2">&quot;media (atención)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;idoneidad_temp_brasil&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;modelo&quot;</span><span class="p">:</span> <span class="s2">&quot;SFA-LSTM (Suleman)&quot;</span><span class="p">,</span>    <span class="s2">&quot;año&quot;</span><span class="p">:</span> <span class="mi">2022</span><span class="p">,</span>
+     <span class="s2">&quot;arquitectura&quot;</span><span class="p">:</span> <span class="s2">&quot;LSTM enc-dec + attn variables&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;multi_horizonte&quot;</span><span class="p">:</span> <span class="s2">&quot;decoder seq2seq&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;panel_embeddings&quot;</span><span class="p">:</span> <span class="s2">&quot;no nativo&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;estacionalidad&quot;</span><span class="p">:</span> <span class="s2">&quot;vía features cíclicas&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;costo&quot;</span><span class="p">:</span> <span class="s2">&quot;medio&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;interpretabilidad&quot;</span><span class="p">:</span> <span class="s2">&quot;media-alta (attn variables)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;idoneidad_temp_brasil&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;modelo&quot;</span><span class="p">:</span> <span class="s2">&quot;DL distrital (Sharma)&quot;</span><span class="p">,</span> <span class="s2">&quot;año&quot;</span><span class="p">:</span> <span class="mi">2023</span><span class="p">,</span>
+     <span class="s2">&quot;arquitectura&quot;</span><span class="p">:</span> <span class="s2">&quot;CNN+RNN focalizado en extremos&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;multi_horizonte&quot;</span><span class="p">:</span> <span class="s2">&quot;limitado (~1 día)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;panel_embeddings&quot;</span><span class="p">:</span> <span class="s2">&quot;no&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;estacionalidad&quot;</span><span class="p">:</span> <span class="s2">&quot;implícita&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;costo&quot;</span><span class="p">:</span> <span class="s2">&quot;alto&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;interpretabilidad&quot;</span><span class="p">:</span> <span class="s2">&quot;media&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;idoneidad_temp_brasil&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;modelo&quot;</span><span class="p">:</span> <span class="s2">&quot;DL post-proc (Trivedi)&quot;</span><span class="p">,</span><span class="s2">&quot;año&quot;</span><span class="p">:</span> <span class="mi">2024</span><span class="p">,</span>
+     <span class="s2">&quot;arquitectura&quot;</span><span class="p">:</span> <span class="s2">&quot;DL corrector NWP&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;multi_horizonte&quot;</span><span class="p">:</span> <span class="s2">&quot;depende del NWP&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;panel_embeddings&quot;</span><span class="p">:</span> <span class="s2">&quot;no&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;estacionalidad&quot;</span><span class="p">:</span> <span class="s2">&quot;heredada del NWP&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;costo&quot;</span><span class="p">:</span> <span class="s2">&quot;bajo&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;interpretabilidad&quot;</span><span class="p">:</span> <span class="s2">&quot;baja&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;idoneidad_temp_brasil&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;modelo&quot;</span><span class="p">:</span> <span class="s2">&quot;TFT (Lim)&quot;</span><span class="p">,</span>             <span class="s2">&quot;año&quot;</span><span class="p">:</span> <span class="mi">2021</span><span class="p">,</span>
+     <span class="s2">&quot;arquitectura&quot;</span><span class="p">:</span> <span class="s2">&quot;Transformer+LSTM+VSN&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;multi_horizonte&quot;</span><span class="p">:</span> <span class="s2">&quot;nativo (vector quantile)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;panel_embeddings&quot;</span><span class="p">:</span> <span class="s2">&quot;sí (static covariates)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;estacionalidad&quot;</span><span class="p">:</span> <span class="s2">&quot;vía known-future inputs&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;costo&quot;</span><span class="p">:</span> <span class="s2">&quot;alto&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;interpretabilidad&quot;</span><span class="p">:</span> <span class="s2">&quot;alta (VSN+attn)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;idoneidad_temp_brasil&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;modelo&quot;</span><span class="p">:</span> <span class="s2">&quot;Informer (Zhou)&quot;</span><span class="p">,</span>       <span class="s2">&quot;año&quot;</span><span class="p">:</span> <span class="mi">2021</span><span class="p">,</span>
+     <span class="s2">&quot;arquitectura&quot;</span><span class="p">:</span> <span class="s2">&quot;Transformer ProbSparse&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;multi_horizonte&quot;</span><span class="p">:</span> <span class="s2">&quot;nativo (one-shot)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;panel_embeddings&quot;</span><span class="p">:</span> <span class="s2">&quot;vía features estáticas&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;estacionalidad&quot;</span><span class="p">:</span> <span class="s2">&quot;vía features cíclicas&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;costo&quot;</span><span class="p">:</span> <span class="s2">&quot;alto&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;interpretabilidad&quot;</span><span class="p">:</span> <span class="s2">&quot;media&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;idoneidad_temp_brasil&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;modelo&quot;</span><span class="p">:</span> <span class="s2">&quot;N-BEATS (Oreshkin)&quot;</span><span class="p">,</span>    <span class="s2">&quot;año&quot;</span><span class="p">:</span> <span class="mi">2020</span><span class="p">,</span>
+     <span class="s2">&quot;arquitectura&quot;</span><span class="p">:</span> <span class="s2">&quot;MLP stack con basis&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;multi_horizonte&quot;</span><span class="p">:</span> <span class="s2">&quot;nativo (vector forecast)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;panel_embeddings&quot;</span><span class="p">:</span> <span class="s2">&quot;vía NBEATSx&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;estacionalidad&quot;</span><span class="p">:</span> <span class="s2">&quot;nativa (basis Fourier)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;costo&quot;</span><span class="p">:</span> <span class="s2">&quot;medio&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;interpretabilidad&quot;</span><span class="p">:</span> <span class="s2">&quot;alta (versión interpretable)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;idoneidad_temp_brasil&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;modelo&quot;</span><span class="p">:</span> <span class="s2">&quot;DeepAR (Salinas)&quot;</span><span class="p">,</span>      <span class="s2">&quot;año&quot;</span><span class="p">:</span> <span class="mi">2020</span><span class="p">,</span>
+     <span class="s2">&quot;arquitectura&quot;</span><span class="p">:</span> <span class="s2">&quot;LSTM autoregresivo prob.&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;multi_horizonte&quot;</span><span class="p">:</span> <span class="s2">&quot;autoregresivo (compounding)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;panel_embeddings&quot;</span><span class="p">:</span> <span class="s2">&quot;sí (entity embedding)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;estacionalidad&quot;</span><span class="p">:</span> <span class="s2">&quot;vía features cíclicas&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;costo&quot;</span><span class="p">:</span> <span class="s2">&quot;medio&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;interpretabilidad&quot;</span><span class="p">:</span> <span class="s2">&quot;media&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;idoneidad_temp_brasil&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span>
+<span class="p">])</span>
+<span class="n">comparison</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>modelo</th>
+      <th>año</th>
+      <th>arquitectura</th>
+      <th>multi_horizonte</th>
+      <th>panel_embeddings</th>
+      <th>estacionalidad</th>
+      <th>costo</th>
+      <th>interpretabilidad</th>
+      <th>idoneidad_temp_brasil</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Conv1D-MLP (Khan)</td>
+      <td>2020</td>
+      <td>CNN+MLP híbrido</td>
+      <td>vector denso (limitado)</td>
+      <td>no</td>
+      <td>no explícita (necesita features cíclicas)</td>
+      <td>bajo</td>
+      <td>baja</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>ConvLSTM+Att (Tekin)</td>
+      <td>2024</td>
+      <td>ConvLSTM+attention</td>
+      <td>rolling encoder-decoder</td>
+      <td>no (asume grilla)</td>
+      <td>implícita en features 2D</td>
+      <td>alto</td>
+      <td>media (atención)</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>SFA-LSTM (Suleman)</td>
+      <td>2022</td>
+      <td>LSTM enc-dec + attn variables</td>
+      <td>decoder seq2seq</td>
+      <td>no nativo</td>
+      <td>vía features cíclicas</td>
+      <td>medio</td>
+      <td>media-alta (attn variables)</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>DL distrital (Sharma)</td>
+      <td>2023</td>
+      <td>CNN+RNN focalizado en extremos</td>
+      <td>limitado (~1 día)</td>
+      <td>no</td>
+      <td>implícita</td>
+      <td>alto</td>
+      <td>media</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>DL post-proc (Trivedi)</td>
+      <td>2024</td>
+      <td>DL corrector NWP</td>
+      <td>depende del NWP</td>
+      <td>no</td>
+      <td>heredada del NWP</td>
+      <td>bajo</td>
+      <td>baja</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>TFT (Lim)</td>
+      <td>2021</td>
+      <td>Transformer+LSTM+VSN</td>
+      <td>nativo (vector quantile)</td>
+      <td>sí (static covariates)</td>
+      <td>vía known-future inputs</td>
+      <td>alto</td>
+      <td>alta (VSN+attn)</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Informer (Zhou)</td>
+      <td>2021</td>
+      <td>Transformer ProbSparse</td>
+      <td>nativo (one-shot)</td>
+      <td>vía features estáticas</td>
+      <td>vía features cíclicas</td>
+      <td>alto</td>
+      <td>media</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>N-BEATS (Oreshkin)</td>
+      <td>2020</td>
+      <td>MLP stack con basis</td>
+      <td>nativo (vector forecast)</td>
+      <td>vía NBEATSx</td>
+      <td>nativa (basis Fourier)</td>
+      <td>medio</td>
+      <td>alta (versión interpretable)</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>DeepAR (Salinas)</td>
+      <td>2020</td>
+      <td>LSTM autoregresivo prob.</td>
+      <td>autoregresivo (compounding)</td>
+      <td>sí (entity embedding)</td>
+      <td>vía features cíclicas</td>
+      <td>medio</td>
+      <td>media</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="heatmap-de-idoneidad-por-criterio-15">
+<h3><strong>4.2 Heatmap de idoneidad por criterio (1–5)</strong><a class="headerlink" href="#heatmap-de-idoneidad-por-criterio-15" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Heatmap visual de idoneidad por criterio para este proyecto.</span>
+<span class="c1"># Escalas 1 (pobre) - 5 (excelente).</span>
+<span class="n">criteria</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+    <span class="c1"># modelo,                     mh,  panel,  est,   cost(inv), interp, datos_temp_brasil</span>
+    <span class="p">[</span><span class="s2">&quot;Conv1D-MLP (Khan)&quot;</span><span class="p">,</span>         <span class="mi">2</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>      <span class="mi">2</span><span class="p">,</span>     <span class="mi">5</span><span class="p">,</span>         <span class="mi">2</span><span class="p">,</span>      <span class="mi">2</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;ConvLSTM+Att (Tekin)&quot;</span><span class="p">,</span>      <span class="mi">3</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>      <span class="mi">3</span><span class="p">,</span>     <span class="mi">2</span><span class="p">,</span>         <span class="mi">3</span><span class="p">,</span>      <span class="mi">2</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;SFA-LSTM (Suleman)&quot;</span><span class="p">,</span>        <span class="mi">4</span><span class="p">,</span>   <span class="mi">2</span><span class="p">,</span>      <span class="mi">3</span><span class="p">,</span>     <span class="mi">4</span><span class="p">,</span>         <span class="mi">4</span><span class="p">,</span>      <span class="mi">4</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;DL distrital (Sharma)&quot;</span><span class="p">,</span>     <span class="mi">1</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>      <span class="mi">2</span><span class="p">,</span>     <span class="mi">2</span><span class="p">,</span>         <span class="mi">3</span><span class="p">,</span>      <span class="mi">2</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;DL post-proc (Trivedi)&quot;</span><span class="p">,</span>    <span class="mi">1</span><span class="p">,</span>   <span class="mi">1</span><span class="p">,</span>      <span class="mi">2</span><span class="p">,</span>     <span class="mi">5</span><span class="p">,</span>         <span class="mi">2</span><span class="p">,</span>      <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;TFT (Lim)&quot;</span><span class="p">,</span>                 <span class="mi">5</span><span class="p">,</span>   <span class="mi">5</span><span class="p">,</span>      <span class="mi">5</span><span class="p">,</span>     <span class="mi">2</span><span class="p">,</span>         <span class="mi">5</span><span class="p">,</span>      <span class="mi">5</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Informer (Zhou)&quot;</span><span class="p">,</span>           <span class="mi">5</span><span class="p">,</span>   <span class="mi">3</span><span class="p">,</span>      <span class="mi">4</span><span class="p">,</span>     <span class="mi">2</span><span class="p">,</span>         <span class="mi">3</span><span class="p">,</span>      <span class="mi">5</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;N-BEATS (Oreshkin)&quot;</span><span class="p">,</span>        <span class="mi">5</span><span class="p">,</span>   <span class="mi">3</span><span class="p">,</span>      <span class="mi">5</span><span class="p">,</span>     <span class="mi">4</span><span class="p">,</span>         <span class="mi">5</span><span class="p">,</span>      <span class="mi">4</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;DeepAR (Salinas)&quot;</span><span class="p">,</span>          <span class="mi">3</span><span class="p">,</span>   <span class="mi">5</span><span class="p">,</span>      <span class="mi">4</span><span class="p">,</span>     <span class="mi">4</span><span class="p">,</span>         <span class="mi">3</span><span class="p">,</span>      <span class="mi">4</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;modelo&quot;</span><span class="p">,</span> <span class="s2">&quot;multi-horizonte&quot;</span><span class="p">,</span> <span class="s2">&quot;panel/embeddings&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;estacionalidad&quot;</span><span class="p">,</span> <span class="s2">&quot;costo (inv)&quot;</span><span class="p">,</span> <span class="s2">&quot;interpretabilidad&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;idoneidad temp_c BR&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;modelo&quot;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">criteria</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;YlGnBu&quot;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">cbar_kws</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;puntaje (1–5)&quot;</span><span class="p">},</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Idoneidad por criterio para forecasting de temp_c sobre panel INMET&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;../results/figures/sota&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;notebooks&quot;</span> <span class="k">else</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;results/figures/sota&quot;</span><span class="p">)</span>
+<span class="n">out</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">out</span> <span class="o">/</span> <span class="s2">&quot;04_heatmap_idoneidad.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/20b130dea5580e3143b1ca41e99534aac3800916110878cc7ee27044f4280f29.png" src="../../_images/20b130dea5580e3143b1ca41e99534aac3800916110878cc7ee27044f4280f29.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="conexion-explicita-con-nuestro-eda">
+<h2>5. Conexión Explícita con nuestro EDA<a class="headerlink" href="#conexion-explicita-con-nuestro-eda" title="Link to this heading">#</a></h2>
+<p>Cada decisión del EDA se mapea al modelo del Top que mejor responde:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Decisión / hallazgo del EDA</p></th>
+<th class="head"><p>Implicación para el modelo</p></th>
+<th class="head"><p>Modelo(s) más adecuado(s)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Estacionalidad diaria + anual fuerte</strong> (FFT picos en 24 h, 12 h, 8766 h; STL ~50–80 % varianza)</p></td>
+<td><p>Necesita arquitectura que capture ciclos de corto y largo plazo</p></td>
+<td><p><strong>N-BEATS-Interpretable</strong> (basis Fourier explícitos), <strong>TFT</strong> (known-future cíclicas + atención multi-head), <strong>Autoformer</strong> (descomposición series-decomp interna)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Lookback <code class="docutils literal notranslate"><span class="pre">168</span> <span class="pre">h</span></code> recomendado</strong> (ACF/PACF significativa hasta 168)</p></td>
+<td><p>Define la longitud de la ventana de entrada</p></td>
+<td><p><strong>Todos los modelos del subset lo soportan</strong>; <strong>Informer</strong> y <strong>TFT</strong> ganan en horizontes largos por atención escalable; <strong>LSTM/GRU</strong> sufren en 168</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Heterogeneidad regional dramática</strong> (Norte 22-32 plano vs Sul 5-35 amplio)</p></td>
+<td><p>Modelo global con embeddings supera a uno por estación</p></td>
+<td><p><strong>TFT</strong> (static covariates), <strong>DeepAR</strong> (entity embeddings), <strong>N-BEATSx</strong> (covariables estáticas)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Eventos extremos en colas (p01/p99)</strong> + flag <code class="docutils literal notranslate"><span class="pre">is_extreme</span></code></p></td>
+<td><p>Loss robusta o cuantílica para no sub-predecir colas</p></td>
+<td><p><strong>TFT</strong> (quantile loss nativo P10/P50/P90), <strong>DeepAR</strong> (distribución gaussiana o Student-t), <strong>Huber loss</strong> sobre LSTM/GRU/N-BEATS</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Faltantes ~21 % en <code class="docutils literal notranslate"><span class="pre">radiation_kj_m2</span></code></strong> (gaps nocturnos legítimos)</p></td>
+<td><p>Excluir esa feature o imputar con cuidado</p></td>
+<td><p>Todos toleran si se preprocesa (ya hecho con <code class="docutils literal notranslate"><span class="pre">ffill(6)</span></code>); <strong>TFT/N-BEATSx/Informer</strong> filtran ventanas con NaN antes de entrenamiento</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Panel: 40 estaciones × ~52 584 horas (train) ≈ 2.1 M ejemplos</strong></p></td>
+<td><p>Volumen moderado-alto: viable para Transformers</p></td>
+<td><p><strong>TFT</strong> y <strong>Informer</strong> entrenables en GPU mid-range en horas; <strong>LSTM</strong> puede ser lento por la recurrencia</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Exógenas seleccionadas</strong> (humidity, pressure, radiation, wind_speed, dew_point)</p></td>
+<td><p>Inputs multivariados al modelo</p></td>
+<td><p><strong>TFT</strong>: past observed inputs; <strong>N-BEATSx</strong>: covariables exógenas; <strong>DeepAR/LSTM/GRU</strong>: concat al input</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Estandarización por estación</strong> (decisión del EDA)</p></td>
+<td><p>El scaler fitea en train por wmo</p></td>
+<td><p><strong>Todos compatibles</strong>; ya implementado en <code class="docutils literal notranslate"><span class="pre">src/data/scalers.py</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Sesgo de representación regional</strong> (Sudeste/Nordeste sobre-representados)</p></td>
+<td><p>Muestreo balanceado por región</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">WeightedRandomSampler</span></code> durante entrenamiento — compatible con <strong>todos los modelos</strong> del subset</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Multi-horizonte 24/72/168 h</strong></p></td>
+<td><p>Output multi-step</p></td>
+<td><p><strong>TFT, Informer, N-BEATSx</strong>: nativos. <strong>LSTM/GRU</strong> con cabeza densa: vector de 168. <strong>DeepAR</strong>: autoregresivo (compounding)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Anti-leakage temporal</strong> (split por años, ventaneo no cruza fronteras)</p></td>
+<td><p>El benchmark debe respetar el split</p></td>
+<td><p><strong>Todos los modelos</strong> consumen los mismos splits ya validados por <code class="docutils literal notranslate"><span class="pre">tests/test_split_real_data.py</span></code> y <code class="docutils literal notranslate"><span class="pre">test_windowing_no_leakage.py</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./chapters\notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#estrategia-de-busqueda"><strong>1. Estrategia de Búsqueda</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#palabras-clave">1.1 Palabras clave</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bases-consultadas">1.2 Bases consultadas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#criterios-de-inclusion">1.3 Criterios de inclusión</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#identificacion-del-top-de-modelos"><strong>2. Identificación del Top de Modelos</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparacion-critica"><strong>3. Comparación Crítica</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tabla-comparativa-estructurada"><strong>3.1 Tabla comparativa estructurada</strong></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#heatmap-de-idoneidad-por-criterio-15"><strong>4.2 Heatmap de idoneidad por criterio (1–5)</strong></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conexion-explicita-con-nuestro-eda">5. Conexión Explícita con nuestro EDA</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Juan Andrés Ramos
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

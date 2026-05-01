@@ -1,0 +1,600 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Proyecto final de Deep Learning aplicado a series temporales meteorológicas &#8212; Forecasting meteorológico horario con Deep Learning (INMET)</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'intro';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="#">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Forecasting meteorológico horario con Deep Learning (INMET)</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1 current active">
+                <a class="reference internal" href="#">
+                    Proyecto final de Deep Learning aplicado a series temporales meteorológicas
+                </a>
+            </li>
+        </ul>
+        
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/intro.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Proyecto final de Deep Learning aplicado a series temporales meteorológicas</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resumen">Resumen</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivacion">Motivación</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pregunta-de-investigacion">Pregunta de investigación</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#objetivos">Objetivos</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alcance-tecnico">Alcance técnico</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelos-evaluados">Modelos evaluados</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#metodologia-de-evaluacion">Metodología de evaluación</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contribuciones-del-proyecto">Contribuciones del proyecto</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#estructura-del-libro">Estructura del libro</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="proyecto-final-de-deep-learning-aplicado-a-series-temporales-meteorologicas">
+<h1>Proyecto final de Deep Learning aplicado a series temporales meteorológicas<a class="headerlink" href="#proyecto-final-de-deep-learning-aplicado-a-series-temporales-meteorologicas" title="Link to this heading">#</a></h1>
+<p><strong>Autores:</strong> Juan Andrés Ramos Cardona y Sergio Andrés Cadavid Bruges</p>
+<section id="resumen">
+<h2>Resumen<a class="headerlink" href="#resumen" title="Link to this heading">#</a></h2>
+<p>Este Jupyter Book presenta el desarrollo completo de un sistema de
+pronóstico meteorológico horario basado en Deep Learning, construido sobre
+datos históricos del <strong>Instituto Nacional de Meteorología de Brasil
+(INMET)</strong>. El proyecto aborda un problema real de forecasting multivariable:
+predecir la temperatura del aire a partir de series horarias y covariables
+meteorológicas, evaluando de forma rigurosa varias arquitecturas modernas de
+aprendizaje profundo.</p>
+<p>El trabajo no se limita a entrenar modelos. La propuesta integra definición
+formal del problema, análisis exploratorio, ingeniería de datos, diseño
+experimental, comparación estadística, discusión de resultados y criterios de
+reproducibilidad. El objetivo es ofrecer una evaluación clara, trazable y
+defendible ante un jurado académico.</p>
+</section>
+<section id="motivacion">
+<h2>Motivación<a class="headerlink" href="#motivacion" title="Link to this heading">#</a></h2>
+<p>El pronóstico meteorológico de corto plazo es una tarea crítica para sectores
+como energía, agricultura, transporte, gestión del riesgo, salud pública y
+operación de infraestructura. Aunque los modelos numéricos tradicionales
+siguen siendo fundamentales, los enfoques basados en datos han ganado
+relevancia por su capacidad para capturar patrones locales, relaciones no
+lineales y dependencias temporales complejas.</p>
+<p>Las estaciones automáticas del INMET generan observaciones horarias que
+permiten estudiar el comportamiento del clima en distintas regiones de Brasil.
+Este escenario es especialmente interesante para Deep Learning porque combina
+estacionalidad diaria, dinámica semanal, variabilidad regional, valores
+faltantes, covariables exógenas y horizontes de predicción multistep.</p>
+</section>
+<section id="pregunta-de-investigacion">
+<h2>Pregunta de investigación<a class="headerlink" href="#pregunta-de-investigacion" title="Link to this heading">#</a></h2>
+<p>La pregunta central del proyecto es:</p>
+<blockquote>
+<div><p>¿Qué arquitectura de Deep Learning ofrece el mejor desempeño, estabilidad y
+capacidad de generalización para forecasting meteorológico horario sobre un
+panel de estaciones INMET?</p>
+</div></blockquote>
+<p>Para responderla, el proyecto compara modelos recurrentes, modelos basados en
+bloques de forecasting, arquitecturas con atención y una línea base de
+persistencia. La evaluación considera no solo el error promedio, sino también
+la variabilidad entre semillas, el comportamiento por horizonte, la
+generalización por región y la significancia estadística de las diferencias.</p>
+</section>
+<section id="objetivos">
+<h2>Objetivos<a class="headerlink" href="#objetivos" title="Link to this heading">#</a></h2>
+<p>El objetivo general es construir y evaluar un pipeline reproducible para
+forecasting meteorológico horario con Deep Learning.</p>
+<p>Los objetivos específicos son:</p>
+<ul class="simple">
+<li><p>Formular el problema de forecasting multistep a partir de datos horarios del
+INMET.</p></li>
+<li><p>Diseñar un proceso de limpieza, transformación y partición temporal que
+evite data leakage.</p></li>
+<li><p>Analizar patrones temporales, distribución de variables, faltantes y
+diferencias regionales.</p></li>
+<li><p>Implementar y entrenar modelos comparables bajo una misma configuración
+experimental.</p></li>
+<li><p>Evaluar el desempeño con métricas estándar de regresión y análisis por
+horizonte.</p></li>
+<li><p>Aplicar pruebas estadísticas para sustentar si las diferencias entre modelos
+son significativas.</p></li>
+<li><p>Documentar el flujo de trabajo con criterios de ciencia abierta y
+reproducibilidad.</p></li>
+</ul>
+</section>
+<section id="alcance-tecnico">
+<h2>Alcance técnico<a class="headerlink" href="#alcance-tecnico" title="Link to this heading">#</a></h2>
+<p>El estudio trabaja con series horarias de estaciones meteorológicas del INMET.
+La variable principal de predicción es la temperatura del aire (<code class="docutils literal notranslate"><span class="pre">temp_c</span></code>) y se
+incluyen covariables meteorológicas como humedad, presión, viento,
+radiación y punto de rocío, según disponibilidad en los datos procesados.</p>
+<p>La tarea experimental se plantea con una ventana histórica de <strong>168 horas</strong>
+(siete días) para producir un pronóstico multistep de <strong>24 horas</strong>. Los datos
+se dividen cronológicamente para respetar la naturaleza temporal del problema:
+entrenamiento, validación y prueba se separan por periodos, evitando mezclar
+información futura durante el ajuste de modelos o escaladores.</p>
+</section>
+<section id="modelos-evaluados">
+<h2>Modelos evaluados<a class="headerlink" href="#modelos-evaluados" title="Link to this heading">#</a></h2>
+<p>El benchmark considera una línea base y cinco familias de modelos:</p>
+<ul class="simple">
+<li><p><strong>Persistencia:</strong> referencia simple y exigente para forecasting de corto
+plazo.</p></li>
+<li><p><strong>LSTM:</strong> red recurrente capaz de capturar dependencias temporales mediante
+memoria interna.</p></li>
+<li><p><strong>GRU:</strong> alternativa recurrente más compacta, con menor complejidad
+paramétrica.</p></li>
+<li><p><strong>N-BEATSx:</strong> arquitectura especializada en forecasting, extendida con
+variables exógenas.</p></li>
+<li><p><strong>Temporal Fusion Transformer (TFT):</strong> modelo con mecanismos de atención,
+selección de variables e interpretabilidad, usado como arquitectura guía del
+estudio.</p></li>
+<li><p><strong>Informer:</strong> variante eficiente basada en atención, orientada a secuencias
+largas.</p></li>
+</ul>
+<p>Esta selección permite contrastar enfoques clásicos de secuencia, modelos
+especializados en forecasting y arquitecturas modernas basadas en atención.</p>
+</section>
+<section id="metodologia-de-evaluacion">
+<h2>Metodología de evaluación<a class="headerlink" href="#metodologia-de-evaluacion" title="Link to this heading">#</a></h2>
+<p>La comparación se realiza con métricas de regresión como RMSE, MAE, R² y
+sMAPE. Además, los resultados se analizan por modelo, horizonte de pronóstico
+y región geográfica.</p>
+<p>Para fortalecer la validez de las conclusiones, el benchmark final incluye:</p>
+<ul class="simple">
+<li><p>intervalos de confianza por bootstrap,</p></li>
+<li><p>comparación de desempeño entre semillas,</p></li>
+<li><p>ranking por horizonte,</p></li>
+<li><p>pruebas no paramétricas como Friedman, Nemenyi y Wilcoxon,</p></li>
+<li><p>prueba Diebold-Mariano para errores pareados,</p></li>
+<li><p>diagnóstico residual con Ljung-Box y BDS,</p></li>
+<li><p>análisis del trade-off entre precisión y costo computacional.</p></li>
+</ul>
+<p>Esta metodología busca diferenciar mejoras reales de variaciones atribuibles
+al azar, a una semilla favorable o a una región específica.</p>
+</section>
+<section id="contribuciones-del-proyecto">
+<h2>Contribuciones del proyecto<a class="headerlink" href="#contribuciones-del-proyecto" title="Link to this heading">#</a></h2>
+<p>Las principales contribuciones son:</p>
+<ul class="simple">
+<li><p>Un pipeline completo para forecasting meteorológico horario con datos reales
+del INMET.</p></li>
+<li><p>Un proceso reproducible de preprocesamiento, escalado, partición temporal y
+evaluación.</p></li>
+<li><p>Una comparación homogénea entre arquitecturas profundas bajo un mismo marco
+experimental.</p></li>
+<li><p>Un análisis exploratorio orientado a entender la estructura temporal y
+regional del problema.</p></li>
+<li><p>Un benchmark final con soporte estadístico para sustentar las conclusiones.</p></li>
+<li><p>Una documentación en formato Jupyter Book pensada para revisión académica,
+trazabilidad técnica y comunicación clara de resultados.</p></li>
+</ul>
+</section>
+<section id="estructura-del-libro">
+<h2>Estructura del libro<a class="headerlink" href="#estructura-del-libro" title="Link to this heading">#</a></h2>
+<p>El libro está organizado en siete capítulos:</p>
+<ol class="arabic simple">
+<li><p><strong>Problema y dataset:</strong> definición de la tarea, fuente de datos, variables
+y alcance experimental.</p></li>
+<li><p><strong>Análisis exploratorio:</strong> estudio de distribución, faltantes, patrones
+temporales y comportamiento regional.</p></li>
+<li><p><strong>Estado del arte:</strong> revisión de enfoques relevantes en forecasting con
+Deep Learning.</p></li>
+<li><p><strong>Implementación y entrenamiento:</strong> descripción del pipeline, modelos,
+configuración y artefactos generados.</p></li>
+<li><p><strong>Paper guía:</strong> análisis de la arquitectura de referencia y su relación con
+el problema.</p></li>
+<li><p><strong>Benchmark final y tests estadísticos:</strong> comparación cuantitativa,
+significancia estadística, diagnóstico residual y discusión de resultados.</p></li>
+<li><p><strong>Reproducibilidad:</strong> instrucciones, estructura del repositorio,
+configuración y criterios para regenerar los experimentos.</p></li>
+</ol>
+</section>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resumen">Resumen</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivacion">Motivación</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pregunta-de-investigacion">Pregunta de investigación</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#objetivos">Objetivos</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alcance-tecnico">Alcance técnico</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modelos-evaluados">Modelos evaluados</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#metodologia-de-evaluacion">Metodología de evaluación</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contribuciones-del-proyecto">Contribuciones del proyecto</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#estructura-del-libro">Estructura del libro</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Juan Andrés Ramos
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

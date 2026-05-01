@@ -1,0 +1,892 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Análisis Técnico del modelo original &#8212; Forecasting meteorológico horario con Deep Learning (INMET)</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapters/notebooks/05_guide_paper';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Forecasting meteorológico horario con Deep Learning (INMET)</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../intro.html">
+                    Proyecto final de Deep Learning aplicado a series temporales meteorológicas
+                </a>
+            </li>
+        </ul>
+        
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/chapters/notebooks/05_guide_paper.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Análisis Técnico del modelo original</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#descripcion-tecnica-del-modelo-original"><strong>1. Descripción Técnica del Modelo Original</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vision-general-de-la-arquitectura">1.1 Visión general de la arquitectura</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#componentes-principales">1.2 Componentes principales</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#variable-selection-networks-vsn">1.2.1 Variable Selection Networks (VSN)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gated-residual-networks-grn">1.2.2 Gated Residual Networks (GRN)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lstm-encoder-decoder">1.2.3 LSTM Encoder-Decoder</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#static-enrichment-layer">1.2.4 Static Enrichment Layer</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-head-attention-sobre-la-dimension-temporal">1.2.5 Multi-head Attention sobre la dimensión temporal</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quantile-loss">1.2.6 Quantile Loss</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flujo-de-datos-durante-una-prediccion">1.3 Flujo de datos durante una predicción</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#supuestos-del-modelo">1.4 Supuestos del modelo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#relacion-con-los-modelos-del-benchmark"><strong>2. Relación con los Modelos del Benchmark</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tabla-comparativa">2.1 Tabla comparativa</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conexion-con-las-decisiones-del-eda"><strong>3. Conexión con las Decisiones del EDA</strong></a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="analisis-tecnico-del-modelo-original">
+<h1><strong>Análisis Técnico del modelo original</strong><a class="headerlink" href="#analisis-tecnico-del-modelo-original" title="Link to this heading">#</a></h1>
+<section id="descripcion-tecnica-del-modelo-original">
+<h2><strong>1. Descripción Técnica del Modelo Original</strong><a class="headerlink" href="#descripcion-tecnica-del-modelo-original" title="Link to this heading">#</a></h2>
+<section id="vision-general-de-la-arquitectura">
+<h3>1.1 Visión general de la arquitectura<a class="headerlink" href="#vision-general-de-la-arquitectura" title="Link to this heading">#</a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                        ─── INPUTS ───
+   Static covariates           Past inputs                Future inputs
+   (categórica + real,         (covariables observadas    (covariables conocidas
+    invariantes en t)           + conocidas pasadas)       en horizonte)
+            │                       │                            │
+            ▼                       │                            │
+   ┌──────────────────┐    ┌────────┴─────────┐         ┌────────┴─────────┐
+   │ Static Covariate │    │   Variable       │         │   Variable       │
+   │    Encoders      │    │   Selection      │         │   Selection      │
+   │  (4 contextos)   │    │  Network (VSN)   │         │  Network (VSN)   │
+   └──────────────────┘    └────────┬─────────┘         └────────┬─────────┘
+            │ c_s,c_e,c_c,c_h        │                            │
+            │   ┌────────────────────┘                            │
+            │   ▼                                                  │
+            │  ┌────────────────────────────────┐                  │
+            │  │  LSTM Encoder (locality)       │                  │
+            │  │  con estado inicial = c_h      │                  │
+            │  └─────────────┬──────────────────┘                  │
+            │                │ (states)                            │
+            │                ▼                                     │
+            │  ┌────────────────────────────────┐                  │
+            │  │  LSTM Decoder (locality)       │◄─────────────────┘
+            │  └─────────────┬──────────────────┘
+            │                │ (h_t)
+            │                ▼
+            │  ┌────────────────────────────────┐
+            └─►│  Static Enrichment (GRN(c_e))  │
+               └─────────────┬──────────────────┘
+                             ▼
+               ┌────────────────────────────────┐
+               │ Multi-head Interpretable Attn  │  ← causal mask
+               │   Q,K,V sobre encoder+decoder   │
+               └─────────────┬──────────────────┘
+                             ▼
+               ┌────────────────────────────────┐
+               │ Position-wise FFN + Add&amp;Norm  │
+               └─────────────┬──────────────────┘
+                             ▼
+               ┌────────────────────────────────┐
+               │ Quantile heads (P10, P50, P90) │
+               └─────────────┬──────────────────┘
+                             ▼
+                  ŷ_{t+1..t+H}  (B, H, |Q|)
+</pre></div>
+</div>
+<p><strong>Tres tipos de inputs explícitos</strong> y un único output multi-horizonte con
+cuantiles. Toda la red comparte un building block común — la <strong>Gated Residual
+Network (GRN)</strong> — que aparece dentro de las VSN, dentro de los static
+covariate encoders, dentro del static enrichment y en las cabezas finales.</p>
+</section>
+<section id="componentes-principales">
+<h3>1.2 Componentes principales<a class="headerlink" href="#componentes-principales" title="Link to this heading">#</a></h3>
+<section id="variable-selection-networks-vsn">
+<h4>1.2.1 Variable Selection Networks (VSN)<a class="headerlink" href="#variable-selection-networks-vsn" title="Link to this heading">#</a></h4>
+<p>Las <strong>VSN</strong> son módulos <em>gating</em> que determinan, <strong>por timestep</strong>, qué
+variables exógenas son relevantes para el pronóstico en ese instante. La
+intuición es que en climatología, por ejemplo, la radiación solar pesa más al
+mediodía que a medianoche; las VSN aprenden esa dependencia temporal de
+relevancia.</p>
+<p>Para un conjunto de variables <code class="docutils literal notranslate"><span class="pre">{x¹_t,</span> <span class="pre">x²,</span> <span class="pre">...,</span> <span class="pre">x^m_t}</span></code> en el timestep <code class="docutils literal notranslate"><span class="pre">t</span></code>:</p>
+<ol class="arabic simple">
+<li><p>Cada variable se proyecta mediante una GRN propia: <code class="docutils literal notranslate"><span class="pre">h^j_t</span> <span class="pre">=</span> <span class="pre">GRN_j(x^j_t)</span></code>.</p></li>
+<li><p>Un vector concatenado <code class="docutils literal notranslate"><span class="pre">Ξ_t</span> <span class="pre">=</span> <span class="pre">[x¹_t</span> <span class="pre">||</span> <span class="pre">...</span> <span class="pre">||</span> <span class="pre">x^m_t]</span></code> pasa por una GRN +
+<em>softmax</em> para producir <strong>pesos por variable</strong> <code class="docutils literal notranslate"><span class="pre">v^χ_t</span> <span class="pre">∈</span> <span class="pre">ℝ^m</span></code>.</p></li>
+<li><p>La salida combinada es la suma ponderada:
+<code class="docutils literal notranslate"><span class="pre">ξ_t</span> <span class="pre">=</span> <span class="pre">Σⱼ</span> <span class="pre">v^χ_{t,j}</span> <span class="pre">·</span> <span class="pre">h^j_t</span></code>.</p></li>
+</ol>
+<p><strong>Aporte de interpretabilidad</strong>: los pesos <code class="docutils literal notranslate"><span class="pre">v^χ_t</span></code> se pueden inspeccionar
+post-hoc para reportar <strong>ranking de importancia por variable</strong> (validación
+empírica del análisis de Mutual Information del EDA §6).</p>
+<p>Existen <strong>tres VSN</strong> en el TFT: una para inputs estáticos, una para inputs
+pasados (observados + conocidos pasados) y una para inputs futuros (conocidos
+en horizonte).</p>
+</section>
+<section id="gated-residual-networks-grn">
+<h4>1.2.2 Gated Residual Networks (GRN)<a class="headerlink" href="#gated-residual-networks-grn" title="Link to this heading">#</a></h4>
+<p>La <strong>GRN</strong> es el bloque base reutilizado en todo el modelo. Su forma:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>GRN(a, c=None):
+    η₁ = ELU(W₁ a + W_c c + b₁)            # opcional: contexto estático c
+    η₂ = W₂ η₁ + b₂
+    η₃ = GLU(η₂)                            # gating: σ(W_g η₂) ⊙ (W_z η₂)
+    return LayerNorm(a_skip + η₃)           # skip connection desde a
+</pre></div>
+</div>
+<p><strong>Funciones clave</strong>:</p>
+<ul class="simple">
+<li><p><strong>Gating (GLU)</strong> decide cuánto del bloque contribuye realmente — útil para
+<em>bypass</em> selectivo cuando el módulo no aporta (ej. dataset pequeño donde
+más capacidad sobreajusta).</p></li>
+<li><p><strong>Skip connection</strong> garantiza que la red puede comportarse como identidad
+si el módulo no es informativo (importante para evitar dependencia
+obligatoria de cada bloque).</p></li>
+<li><p><strong>Contexto estático opcional <code class="docutils literal notranslate"><span class="pre">c</span></code></strong>: la GRN puede ser modulada por un
+vector estático (proveniente de los static covariate encoders), permitiendo
+que metadatos por entidad afecten el procesamiento dinámico.</p></li>
+</ul>
+</section>
+<section id="lstm-encoder-decoder">
+<h4>1.2.3 LSTM Encoder-Decoder<a class="headerlink" href="#lstm-encoder-decoder" title="Link to this heading">#</a></h4>
+<p>Un <strong>LSTM bidireccional opcional</strong> procesa los inputs pasados (encoder) y un
+<strong>LSTM unidireccional</strong> los inputs futuros (decoder). Su rol es capturar
+<strong>dependencias locales</strong> — patrones de minutos a horas — antes de que la
+atención multi-head capte las dependencias largas.</p>
+<p><strong>Diferencia con un LSTM clásico</strong>: aquí el LSTM <strong>no produce el output
+final</strong>. Su salida <code class="docutils literal notranslate"><span class="pre">φ_t</span></code> se enriquece con contexto estático (Static
+Enrichment, §3.2.4) y luego pasa por la atención. El LSTM es un módulo
+<em>upstream</em> dentro del flujo, no la cabeza del modelo.</p>
+<p><strong>Estado inicial inyectado</strong>: el encoder LSTM inicia con <code class="docutils literal notranslate"><span class="pre">(c_h,</span> <span class="pre">c_c)</span></code>
+provenientes de los static encoders, de modo que la entidad (estación)
+modula la dinámica recurrente desde el primer paso.</p>
+</section>
+<section id="static-enrichment-layer">
+<h4>1.2.4 Static Enrichment Layer<a class="headerlink" href="#static-enrichment-layer" title="Link to this heading">#</a></h4>
+<p>Tras el LSTM, cada timestep <code class="docutils literal notranslate"><span class="pre">t</span></code> se enriquece con <strong>otro</strong> contexto estático
+<code class="docutils literal notranslate"><span class="pre">c_e</span></code> distinto del usado para inicializar el LSTM:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">θ_t</span> <span class="o">=</span> <span class="n">GRN</span><span class="p">(</span><span class="n">φ_t</span><span class="p">,</span> <span class="n">c_e</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Esta etapa permite que la entidad (estación) module la representación
+temporal en cada paso, sin diluirse en la recurrencia.</p>
+<p><strong>Por qué cuatro contextos estáticos distintos</strong> (<code class="docutils literal notranslate"><span class="pre">c_s</span></code>, <code class="docutils literal notranslate"><span class="pre">c_e</span></code>, <code class="docutils literal notranslate"><span class="pre">c_c</span></code>,
+<code class="docutils literal notranslate"><span class="pre">c_h</span></code>): el paper diseña encoders separados para que cada parte del modelo
+“vea” los metadatos por entidad de la forma más útil — uno modula la VSN
+estática, otro inicializa el LSTM, otro enriquece la representación post-LSTM
+y otro modula el último gating. Es una decisión empírica del paper que
+mejora la performance medida.</p>
+</section>
+<section id="multi-head-attention-sobre-la-dimension-temporal">
+<h4>1.2.5 Multi-head Attention sobre la dimensión temporal<a class="headerlink" href="#multi-head-attention-sobre-la-dimension-temporal" title="Link to this heading">#</a></h4>
+<p>La atención multi-head <strong>causal</strong> (con máscara triangular) se aplica sobre
+las representaciones enriquecidas <code class="docutils literal notranslate"><span class="pre">θ_t</span></code> para capturar <strong>dependencias largas</strong>
+(más allá del alcance del LSTM). El paper introduce una variante
+<strong>interpretable</strong>: en lugar de promediar los outputs de los heads
+concatenados, <strong>promedia los scores de atención</strong> entre heads — permitiendo
+una matriz <code class="docutils literal notranslate"><span class="pre">α_{i,j}</span></code> única e interpretable como “cuánto el paso <code class="docutils literal notranslate"><span class="pre">i</span></code> mira al
+paso <code class="docutils literal notranslate"><span class="pre">j</span></code>”.</p>
+<p><strong>Aporte de interpretabilidad</strong>: la matriz <code class="docutils literal notranslate"><span class="pre">α</span></code> es directamente reportable.
+Para forecasting de temperatura podemos ver, ej., que la predicción del paso
++24 h presta atención fuerte a los pasos -24 y -168 (mismo periodo del día
+anterior y misma hora de la semana anterior) — coincidiendo con los lags
+relevantes detectados por la ACF en EDA §5.4.</p>
+</section>
+<section id="quantile-loss">
+<h4>1.2.6 Quantile Loss<a class="headerlink" href="#quantile-loss" title="Link to this heading">#</a></h4>
+<p>La cabeza final no produce un valor puntual sino <strong>un vector de cuantiles</strong>
+<code class="docutils literal notranslate"><span class="pre">(q̂^{0.1}_t,</span> <span class="pre">q̂^{0.5}_t,</span> <span class="pre">q̂^{0.9}_t)</span></code> para cada paso del horizonte. Se
+entrena con la loss:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>QL_q(y, q̂_q) = max( q · (y − q̂_q), (q − 1) · (y − q̂_q) )
+loss(y, q̂)   = Σ_q QL_q(y, q̂_q)  promediada sobre batch y horizonte
+</pre></div>
+</div>
+<p><strong>Por qué quantile y no MSE</strong>:</p>
+<ul class="simple">
+<li><p>MSE minimiza el <strong>error medio cuadrático</strong> y converge al <strong>valor esperado</strong>
+condicional. Para distribuciones asimétricas o con colas pesadas (eventos
+extremos del EDA §2), el valor esperado está sesgado hacia el centro —
+el modelo <strong>sub-predice</strong> las colas.</p></li>
+<li><p>Quantile loss converge al <strong>cuantile condicional</strong> exacto. P50 = mediana
+predicha; P10, P90 = bandas. Sin sub-predicción de colas.</p></li>
+<li><p><strong>Bandas P10–P90 ≈ intervalo de confianza del 80 %</strong> sin necesidad de
+bootstrap o ensembles.</p></li>
+</ul>
+</section>
+</section>
+<section id="flujo-de-datos-durante-una-prediccion">
+<h3>1.3 Flujo de datos durante una predicción<a class="headerlink" href="#flujo-de-datos-durante-una-prediccion" title="Link to this heading">#</a></h3>
+<p>Para una muestra (estación A001, ventana terminada en <code class="docutils literal notranslate"><span class="pre">t</span></code>):</p>
+<ol class="arabic simple">
+<li><p><strong>Inputs estáticos</strong>: <code class="docutils literal notranslate"><span class="pre">[station_id=0,</span> <span class="pre">region=&quot;Centro-Oeste&quot;,</span> <span class="pre">biome=&quot;Cerrado&quot;,</span> <span class="pre">koppen_class=&quot;Aw&quot;,</span> <span class="pre">lat=-15.79,</span> <span class="pre">lng=-47.93,</span> <span class="pre">alt=1159.5]</span></code> → encoders generan
+los cuatro vectores de contexto <code class="docutils literal notranslate"><span class="pre">c_s,</span> <span class="pre">c_e,</span> <span class="pre">c_c,</span> <span class="pre">c_h</span></code>.</p></li>
+<li><p><strong>Inputs pasados</strong> (<code class="docutils literal notranslate"><span class="pre">t-167..t</span></code>): tensor <code class="docutils literal notranslate"><span class="pre">(168,</span> <span class="pre">n_past)</span></code> con
+<code class="docutils literal notranslate"><span class="pre">[temp_c,</span> <span class="pre">humidity_pct,</span> <span class="pre">pressure_mb,</span> <span class="pre">radiation_kj_m2,</span> <span class="pre">wind_speed_ms,</span> <span class="pre">dew_point_c,</span> <span class="pre">hour_sin,</span> <span class="pre">hour_cos,</span> <span class="pre">doy_sin,</span> <span class="pre">doy_cos,</span> <span class="pre">month_sin,</span> <span class="pre">month_cos]</span></code>.</p></li>
+<li><p><strong>Inputs futuros</strong> (<code class="docutils literal notranslate"><span class="pre">t+1..t+168</span></code>): tensor <code class="docutils literal notranslate"><span class="pre">(168,</span> <span class="pre">n_future)</span></code> con sólo las
+covariables conocidas a futuro: <code class="docutils literal notranslate"><span class="pre">[hour_sin,</span> <span class="pre">hour_cos,</span> <span class="pre">doy_sin,</span> <span class="pre">doy_cos,</span> <span class="pre">month_sin,</span> <span class="pre">month_cos]</span></code>. Las exógenas observadas no entran al decoder
+(porque no las conocemos a futuro).</p></li>
+<li><p><strong>VSN sobre pasado</strong> y <strong>VSN sobre futuro</strong> producen las representaciones
+<code class="docutils literal notranslate"><span class="pre">ξ^{past}_t</span></code> y <code class="docutils literal notranslate"><span class="pre">ξ^{fut}_t</span></code> con pesos por variable inspeccionables.</p></li>
+<li><p><strong>LSTM encoder</strong> procesa <code class="docutils literal notranslate"><span class="pre">ξ^{past}_{t-167..t}</span></code> partiendo de <code class="docutils literal notranslate"><span class="pre">c_h</span></code> →
+produce <code class="docutils literal notranslate"><span class="pre">(φ_{t-167},</span> <span class="pre">...,</span> <span class="pre">φ_t)</span></code>.</p></li>
+<li><p><strong>LSTM decoder</strong> procesa <code class="docutils literal notranslate"><span class="pre">ξ^{fut}_{t+1..t+168}</span></code> heredando el estado final
+del encoder → produce <code class="docutils literal notranslate"><span class="pre">(φ_{t+1},</span> <span class="pre">...,</span> <span class="pre">φ_{t+168})</span></code>.</p></li>
+<li><p><strong>Static enrichment</strong>: cada <code class="docutils literal notranslate"><span class="pre">φ_τ</span></code> se modula con <code class="docutils literal notranslate"><span class="pre">c_e</span></code> → <code class="docutils literal notranslate"><span class="pre">θ_τ</span> <span class="pre">=</span> <span class="pre">GRN(φ_τ,</span> <span class="pre">c_e)</span></code>.</p></li>
+<li><p><strong>Multi-head self-attention</strong> (causal) sobre <code class="docutils literal notranslate"><span class="pre">(θ_{t-167},</span> <span class="pre">...,</span> <span class="pre">θ_{t+168})</span></code>
+→ produce <code class="docutils literal notranslate"><span class="pre">(β_{t+1},</span> <span class="pre">...,</span> <span class="pre">β_{t+168})</span></code> para los pasos del horizonte, junto
+con la matriz <code class="docutils literal notranslate"><span class="pre">α</span></code> de pesos.</p></li>
+<li><p><strong>Position-wise FFN + Add &amp; Norm</strong> sobre cada <code class="docutils literal notranslate"><span class="pre">β_τ</span></code>.</p></li>
+<li><p><strong>Quantile heads</strong>: <code class="docutils literal notranslate"><span class="pre">(q̂^{0.1}_τ,</span> <span class="pre">q̂^{0.5}_τ,</span> <span class="pre">q̂^{0.9}_τ)</span></code> por cada paso
+<code class="docutils literal notranslate"><span class="pre">τ</span></code> del horizonte — output final <code class="docutils literal notranslate"><span class="pre">(168,</span> <span class="pre">3)</span></code>.</p></li>
+</ol>
+</section>
+<section id="supuestos-del-modelo">
+<h3>1.4 Supuestos del modelo<a class="headerlink" href="#supuestos-del-modelo" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Supuesto</p></th>
+<th class="head"><p>Estado en este proyecto</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Series con <strong>frecuencia constante</strong></p></td>
+<td><p>✓ INMET es horario estricto, regularizado en <code class="docutils literal notranslate"><span class="pre">process.py</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Existencia de covariables temporales <strong>conocidas a futuro</strong></p></td>
+<td><p>✓ Las cíclicas (<code class="docutils literal notranslate"><span class="pre">hour_sin/cos</span></code>, <code class="docutils literal notranslate"><span class="pre">doy_sin/cos</span></code>, <code class="docutils literal notranslate"><span class="pre">month_sin/cos</span></code>) son determinísticas y conocidas a cualquier horizonte.</p></td>
+</tr>
+<tr class="row-even"><td><p>Existencia de covariables <strong>estáticas por entidad</strong></p></td>
+<td><p>✓ <code class="docutils literal notranslate"><span class="pre">lat</span></code>, <code class="docutils literal notranslate"><span class="pre">lng</span></code>, <code class="docutils literal notranslate"><span class="pre">alt</span></code>, <code class="docutils literal notranslate"><span class="pre">region</span></code>, <code class="docutils literal notranslate"><span class="pre">biome</span></code>, <code class="docutils literal notranslate"><span class="pre">koppen_class</span></code>, <code class="docutils literal notranslate"><span class="pre">station_id</span></code> — siete features.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Suficientes ejemplos por entidad para entrenar embeddings significativos</p></td>
+<td><p><strong>Parcial</strong>: ~52 584 horas/estación en train; suficiente. Con la salvedad de A301 y A615 que tienen menos años cubiertos.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Estacionariedad débil</strong> dentro de la ventana de lookback</p></td>
+<td><p><strong>Parcial</strong>: el ADF del EDA §5.3 mostró que la serie original no es estacionaria, pero la diferenciación de orden 1 sí; el modelo absorbe la no-estacionariedad vía la normalización por estación + LSTM + atención.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Independencia entre entidades</strong></p></td>
+<td><p><strong>Aproximada</strong>: en realidad las estaciones cercanas correlacionan; el TFT no modela esto explícitamente. Mitigación: el embedding de <code class="docutils literal notranslate"><span class="pre">region</span></code> captura algo de la correlación espacial agregada.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Distribución gaussiana del residuo</strong></p></td>
+<td><p><strong>No</strong>: la quantile loss no asume distribución alguna; supera al MSE en colas asimétricas (eventos extremos).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="relacion-con-los-modelos-del-benchmark">
+<h2><strong>2. Relación con los Modelos del Benchmark</strong><a class="headerlink" href="#relacion-con-los-modelos-del-benchmark" title="Link to this heading">#</a></h2>
+<section id="tabla-comparativa">
+<h3>2.1 Tabla comparativa<a class="headerlink" href="#tabla-comparativa" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">relation</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+    <span class="p">{</span><span class="s2">&quot;modelo_benchmark&quot;</span><span class="p">:</span> <span class="s2">&quot;Persistencia&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;similitudes_con_TFT&quot;</span><span class="p">:</span> <span class="s2">&quot;Ninguna a nivel de aprendizaje; sí comparten el output multi-horizonte (vector de 168).&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;diferencias_clave&quot;</span><span class="p">:</span> <span class="s2">&quot;Persistencia no aprende; TFT aprende embeddings, atención, VSN, quantile loss. Persistencia es el piso obligatorio.&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;modelo_benchmark&quot;</span><span class="p">:</span> <span class="s2">&quot;LSTM vanilla&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;similitudes_con_TFT&quot;</span><span class="p">:</span> <span class="s2">&quot;Comparten el LSTM como bloque temporal local (encoder).&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;diferencias_clave&quot;</span><span class="p">:</span> <span class="s2">&quot;TFT añade VSN (selección de variables), GRN (gating), multi-head attention (long-range), embeddings de entidad y quantile loss. LSTM solo aplana al final con un Linear.&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;modelo_benchmark&quot;</span><span class="p">:</span> <span class="s2">&quot;GRU&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;similitudes_con_TFT&quot;</span><span class="p">:</span> <span class="s2">&quot;Familia recurrente; estructura similar al LSTM dentro del TFT.&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;diferencias_clave&quot;</span><span class="p">:</span> <span class="s2">&quot;GRU usa una celda más simple (3 gates → 2 gates); TFT integra LSTM dentro de un sistema mucho más amplio. GRU no tiene atención ni embeddings.&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;modelo_benchmark&quot;</span><span class="p">:</span> <span class="s2">&quot;N-BEATSx&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;similitudes_con_TFT&quot;</span><span class="p">:</span> <span class="s2">&quot;Multi-horizonte single-shot; ambos descomponen el pronóstico (TFT vía atención + VSN, N-BEATS vía bases trend/seasonality).&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;diferencias_clave&quot;</span><span class="p">:</span> <span class="s2">&quot;N-BEATS no usa atención ni embeddings nativos. TFT modula el pronóstico con metadatos por entidad; N-BEATS no nativamente.&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;modelo_benchmark&quot;</span><span class="p">:</span> <span class="s2">&quot;Informer&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;similitudes_con_TFT&quot;</span><span class="p">:</span> <span class="s2">&quot;Ambos son arquitecturas con multi-head attention para forecasting de larga secuencia; ambos manejan 168 h.&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;diferencias_clave&quot;</span><span class="p">:</span> <span class="s2">&quot;Informer privilegia eficiencia (ProbSparse) y no tiene VSN ni embeddings nativos. TFT privilegia interpretabilidad y entidades.&quot;</span><span class="p">},</span>
+<span class="p">])</span>
+<span class="n">relation</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>modelo_benchmark</th>
+      <th>similitudes_con_TFT</th>
+      <th>diferencias_clave</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Persistencia</td>
+      <td>Ninguna a nivel de aprendizaje; sí comparten e...</td>
+      <td>Persistencia no aprende; TFT aprende embedding...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>LSTM vanilla</td>
+      <td>Comparten el LSTM como bloque temporal local (...</td>
+      <td>TFT añade VSN (selección de variables), GRN (g...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>GRU</td>
+      <td>Familia recurrente; estructura similar al LSTM...</td>
+      <td>GRU usa una celda más simple (3 gates → 2 gate...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>N-BEATSx</td>
+      <td>Multi-horizonte single-shot; ambos descomponen...</td>
+      <td>N-BEATS no usa atención ni embeddings nativos....</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Informer</td>
+      <td>Ambos son arquitecturas con multi-head attenti...</td>
+      <td>Informer privilegia eficiencia (ProbSparse) y ...</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+</section>
+<section id="conexion-con-las-decisiones-del-eda">
+<h2><strong>3. Conexión con las Decisiones del EDA</strong><a class="headerlink" href="#conexion-con-las-decisiones-del-eda" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">eda_link</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+    <span class="p">{</span><span class="s2">&quot;decision_EDA&quot;</span><span class="p">:</span> <span class="s2">&quot;Estacionalidad diaria + anual fuerte (FFT picos 24h, 12h, 8766h; STL ~50–80 % varianza estacional)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;como_TFT_la_honra&quot;</span><span class="p">:</span> <span class="s2">&quot;Las cíclicas (`hour_sin/cos`, `doy_sin/cos`, `month_sin/cos`) entran como **&#39;known future inputs&#39;** y la VSN futura les asigna pesos automáticamente. El multi-head attention captura los lags 24/168 nativamente.&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;decision_EDA&quot;</span><span class="p">:</span> <span class="s2">&quot;Heterogeneidad regional dramática (Norte 22-32 °C plano vs Sul 5-35 °C amplio)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;como_TFT_la_honra&quot;</span><span class="p">:</span> <span class="s2">&quot;**Static covariates** (`region`, `biome`, `koppen_class`, `lat/lng/alt`) se inyectan vía los 4 contextos estáticos, modulando VSN, LSTM, static-enrichment y output.&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;decision_EDA&quot;</span><span class="p">:</span> <span class="s2">&quot;Lookback de 168 h justificado por ACF/PACF significativa hasta lag 168&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;como_TFT_la_honra&quot;</span><span class="p">:</span> <span class="s2">&quot;**`max_encoder_length=168`** directamente; la atención causal cubre los 168 pasos sin degradación a diferencia de LSTM puro.&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;decision_EDA&quot;</span><span class="p">:</span> <span class="s2">&quot;Multi-horizonte simultáneo {24, 72, 168}&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;como_TFT_la_honra&quot;</span><span class="p">:</span> <span class="s2">&quot;**`max_prediction_length=168`** con output single-shot; las métricas se reportan en slices h=24, h=72, h=168 sobre el mismo vector de salida.&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;decision_EDA&quot;</span><span class="p">:</span> <span class="s2">&quot;Eventos extremos en colas (p01/p99) con flag `is_extreme`&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;como_TFT_la_honra&quot;</span><span class="p">:</span> <span class="s2">&quot;**Quantile loss multi-percentil** (P10/P50/P90) modela las colas explícitamente — no sub-predice como MSE. Las bandas P10–P90 ≈ 80 % CI.&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;decision_EDA&quot;</span><span class="p">:</span> <span class="s2">&quot;~21 </span><span class="si">% f</span><span class="s2">altantes en `radiation_kj_m2` (gaps nocturnos legítimos)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;como_TFT_la_honra&quot;</span><span class="p">:</span> <span class="s2">&quot;La **VSN pasada** aprende a darle peso bajo en pasos nocturnos; ventanas con NaN remanente se descartan en el dataset (no se imputan con 0).&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;decision_EDA&quot;</span><span class="p">:</span> <span class="s2">&quot;Exógenas seleccionadas: humidity, pressure, radiation, wind_speed, dew_point&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;como_TFT_la_honra&quot;</span><span class="p">:</span> <span class="s2">&quot;Entran como **&#39;past observed inputs&#39;** a la VSN pasada — la VSN reportará empíricamente cuáles son más relevantes (validación del análisis MI del EDA §6).&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;decision_EDA&quot;</span><span class="p">:</span> <span class="s2">&quot;Estandarización por estación (scaler fit en train por wmo)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;como_TFT_la_honra&quot;</span><span class="p">:</span> <span class="s2">&quot;Compatible: la normalización ocurre upstream, el TFT consume los inputs ya estandarizados; la inversión se hace post-hoc al inverse_transform las predicciones.&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;decision_EDA&quot;</span><span class="p">:</span> <span class="s2">&quot;Anti-leakage temporal estricto (split por años + ventaneo no cruza fronteras)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;como_TFT_la_honra&quot;</span><span class="p">:</span> <span class="s2">&quot;Compatible: el TFT consume las ventanas que entrega `make_windows`; la causal mask del attention impide adicionalmente cualquier filtración intra-ventana.&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;decision_EDA&quot;</span><span class="p">:</span> <span class="s2">&quot;Sesgo de representación (Sudeste/Nordeste con más estaciones)&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;como_TFT_la_honra&quot;</span><span class="p">:</span> <span class="s2">&quot;Mitigable con **`WeightedRandomSampler`** ponderado por región — compatible con la implementación oficial. El embedding de `region` además permite al modelo compensar el sesgo internamente.&quot;</span><span class="p">},</span>
+<span class="p">])</span>
+<span class="n">eda_link</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>decision_EDA</th>
+      <th>como_TFT_la_honra</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Estacionalidad diaria + anual fuerte (FFT pico...</td>
+      <td>Las cíclicas (`hour_sin/cos`, `doy_sin/cos`, `...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Heterogeneidad regional dramática (Norte 22-32...</td>
+      <td>**Static covariates** (`region`, `biome`, `kop...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Lookback de 168 h justificado por ACF/PACF sig...</td>
+      <td>**`max_encoder_length=168`** directamente; la ...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Multi-horizonte simultáneo {24, 72, 168}</td>
+      <td>**`max_prediction_length=168`** con output sin...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Eventos extremos en colas (p01/p99) con flag `...</td>
+      <td>**Quantile loss multi-percentil** (P10/P50/P90...</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>~21 % faltantes en `radiation_kj_m2` (gaps noc...</td>
+      <td>La **VSN pasada** aprende a darle peso bajo en...</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Exógenas seleccionadas: humidity, pressure, ra...</td>
+      <td>Entran como **'past observed inputs'** a la VS...</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Estandarización por estación (scaler fit en tr...</td>
+      <td>Compatible: la normalización ocurre upstream, ...</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Anti-leakage temporal estricto (split por años...</td>
+      <td>Compatible: el TFT consume las ventanas que en...</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Sesgo de representación (Sudeste/Nordeste con ...</td>
+      <td>Mitigable con **`WeightedRandomSampler`** pond...</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./chapters\notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#descripcion-tecnica-del-modelo-original"><strong>1. Descripción Técnica del Modelo Original</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vision-general-de-la-arquitectura">1.1 Visión general de la arquitectura</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#componentes-principales">1.2 Componentes principales</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#variable-selection-networks-vsn">1.2.1 Variable Selection Networks (VSN)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gated-residual-networks-grn">1.2.2 Gated Residual Networks (GRN)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lstm-encoder-decoder">1.2.3 LSTM Encoder-Decoder</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#static-enrichment-layer">1.2.4 Static Enrichment Layer</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-head-attention-sobre-la-dimension-temporal">1.2.5 Multi-head Attention sobre la dimensión temporal</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quantile-loss">1.2.6 Quantile Loss</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flujo-de-datos-durante-una-prediccion">1.3 Flujo de datos durante una predicción</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#supuestos-del-modelo">1.4 Supuestos del modelo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#relacion-con-los-modelos-del-benchmark"><strong>2. Relación con los Modelos del Benchmark</strong></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tabla-comparativa">2.1 Tabla comparativa</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conexion-con-las-decisiones-del-eda"><strong>3. Conexión con las Decisiones del EDA</strong></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Juan Andrés Ramos
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
